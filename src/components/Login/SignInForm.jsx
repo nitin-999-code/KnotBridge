@@ -1,43 +1,35 @@
 import React, { useState } from 'react';
-import { FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import log from '../../images/doc/info.svg';
-import register from '../../images/doc/register.svg';
 import SignIn from './SignIn';
-import './SignInForm.css';
 import SignUp from './SignUp';
+import { FaHeartbeat } from 'react-icons/fa';
+import './SignInForm.css';
 
 const SignInForm = () => {
     const [isSignUp, setSignUp] = useState(false);
     return (
-        <div className={`${isSignUp ? "signin-signup-container sign-up-mode" : "signin-signup-container"}`}>
-            <Link to="/">
-                <span className="pageCloseBtn"><FaTimes /></span>
-            </Link>
-            <div className="forms-container">
-                <div className="signIn-singUp">
-                    <SignIn />
-                    <SignUp setSignUp={setSignUp} />
+        <div className="auth-page-wrapper">
+            <div className="auth-card">
+                <div className="auth-header text-center">
+                    <Link to="/" className="auth-logo">
+                        <FaHeartbeat className="auth-logo-icon" /> <span>MediBook</span>
+                    </Link>
                 </div>
-            </div>
-
-            <div className="panels-container">
-                <div className="panel left-panel">
-                    <div className="content">
-                        <h3 className='text-white'>New here ?</h3>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi beatae quas magnam!</p>
-                        <button className="iBtn transparent" onClick={() => setSignUp(true)}>Sign Up</button>
-                    </div>
-                    <img src={`${log}`} alt="" className="pImg" />
+                
+                <div className="auth-body">
+                    {isSignUp ? (
+                        <SignUp setSignUp={setSignUp} />
+                    ) : (
+                        <SignIn />
+                    )}
                 </div>
 
-                <div className="panel right-panel">
-                    <div className="content">
-                        <h3 className='text-white'>One of us ?</h3>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi beatae quas magnam!</p>
-                        <button className="iBtn transparent" onClick={() => setSignUp(false)}>Sign In</button>
-                    </div>
-                    <img src={`${register}`} alt="" className="pImg" />
+                <div className="auth-footer text-center mt-4">
+                    {isSignUp ? (
+                        <p>Already have an account? <button className="auth-link-btn" onClick={() => setSignUp(false)}>Sign In</button></p>
+                    ) : (
+                        <p>Don't have an account? <button className="auth-link-btn" onClick={() => setSignUp(true)}>Sign up</button></p>
+                    )}
                 </div>
             </div>
         </div>

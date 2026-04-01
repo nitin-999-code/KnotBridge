@@ -30,7 +30,7 @@ const Contact = () => {
 		{
 			icon: <FaMapMarkerAlt />,
 			title: 'Visit us',
-			content: '1212 Kazi Nazrul Avenue, Sylhet, Bangladesh 3214'
+			content: 'Kalewadi, Pune, Maharashtra 411017'
 		},
 		{
 			icon: <FaPhoneAlt />,
@@ -174,19 +174,7 @@ const Contact = () => {
 				</div>
 			</section>
 
-			<section className="contact-map">
-				<div className="container">
-					<iframe
-						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.8974729194574!2d90.41265931498185!3d23.750934284588794!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8b7a55cd36f%3A0xfcc5b021faff43ea!2sDhaka%2C%20Bangladesh!5e0!3m2!1sen!2sbd!4v1626084737854!5m2!1sen!2sbd"
-						width="100%"
-						height="450"
-						style={{ border: 0, borderRadius: '20px' }}
-						allowFullScreen=""
-						loading="lazy"
-						title="Google Maps"
-					/>
-				</div>
-			</section>
+
 
 			<Footer />
 		</>

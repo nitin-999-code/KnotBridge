@@ -7,6 +7,7 @@ import BookDoctor from '../BookOurDoctor/BookDoctor';
 import Available from '../AvailableFeatures/Available';
 import HeroSection from '../HeroSection/HeroSection';
 import InfoPage from '../InfoPage/InfoPage';
+import Stats from '../Stats/Stats';
 import Header from '../../Shared/Header/Header';
 import Service from '../Services/Service';
 import Gallery from '../Gallery/Gallery';
@@ -18,6 +19,7 @@ const Home = () => {
             <Header />
             <HeroSection />
             <InfoPage />
+            <Stats />
             <Service />
             <ClinicAndSpecialities />
             <BookDoctor />

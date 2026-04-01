@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
-import SocialSignUp from './SocialSignUp';
 import { useForm } from 'react-hook-form';
 import Spinner from 'react-bootstrap/Spinner';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,7 @@ import { message } from 'antd';
 import { useMessageEffect } from '../../utils/messageSideEffect';
 import { decodeToken } from '../../utils/jwt';
 
-const SignIn = ({ handleResponse }) => {
+const SignIn = () => {
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [infoError, setInfoError] = useState('');
     const [show, setShow] = useState(true);
@@ -57,86 +56,75 @@ const SignIn = ({ handleResponse }) => {
     };
 
     return (
-        <>
+        <div className="auth-form-container">
             {showForgotPassword ? (
-                <form className="sign-in-form" onSubmit={onHandleForgotPassword}>
-                    <h2 className="title">Forgot Password</h2>
-                    <div>To Forgot Your Password Please Enter your email</div>
-                    <div className="input-field">
-                        <span className="fIcon"><FaEnvelope /></span>
+                <form className="auth-form" onSubmit={onHandleForgotPassword}>
+                    <h2 className="auth-title">Reset Password</h2>
+                    <p className="auth-subtitle mb-4">Enter your email to reset your password.</p>
+                    <div className="auth-input-group mb-3">
+                        <span className="auth-input-icon"><FaEnvelope /></span>
                         <input
-                            value={forgotEmail !== undefined && forgotEmail}
+                            value={forgotEmail}
                             onChange={(e) => setForgotEmail(e.target.value)}
-                            placeholder="Enter Your Email"
+                            placeholder="Email address"
                             type="email"
+                            className="auth-input"
                             required
                         />
                     </div>
-                    <div onClick={handleShowForgotPassword} className="text-bold" style={{ cursor: 'pointer', color: '#4C25F5' }}>
-                        Stil Remember Password ?
+                    <div className="text-end mb-4">
+                        <button type="button" onClick={handleShowForgotPassword} className="auth-text-link">Remember Password?</button>
                     </div>
-                    <button className="iBtn" type="submit" value="sign In">
-                        {resetIsLoading ? <Spinner animation="border" variant="info" /> : 'Submit'}
+                    <button className="auth-btn-primary w-100" type="submit">
+                        {resetIsLoading ? <Spinner size="sm" animation="border" /> : 'Send Reset Link'}
                     </button>
                 </form>
             ) : (
-                <form className="sign-in-form" onSubmit={handleSubmit(onSubmit)}>
-                    <Toast show={show} onClose={() => setShow(!show)} className="signInToast">
+                <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
+                    <Toast show={show} onClose={() => setShow(!show)} className="auth-toast position-absolute top-0 end-0 m-3" style={{ zIndex: 1050 }}>
                         <Toast.Header>
-                            <strong className="mr-auto">Fair use &amp; demo access</strong>
+                            <strong className="me-auto">Fair use & demo access</strong>
                         </Toast.Header>
-                        <Toast.Body>
-                            <p className="mb-2 small">
-                                Please do not misuse this app. Do not create extra accounts unless you need them for testing.
-                                Respect others&apos; data and availability.
-                            </p>
-                            <hr />
-                            <div className="small mb-2">
-                                <strong>Patient</strong> — sign in with your registered email and password (e.g. demo:{' '}
-                                <code>patient@gmail.com</code> / <code>123456</code> if that user exists in your database).
-                            </div>
-                            <div className="bg-dark text-white p-2 px-3 rounded small mb-2">
-                                <strong>Doctor</strong>
-                                <br />
-                                email: doctor@gmail.com
-                                <br />
-                                password: 123456
-                            </div>
-                            <div className="bg-secondary text-white p-2 px-3 rounded small mb-2">
-                                <strong>Admin</strong>
-                                <br />
-                                Use an Auth row with <code>role = admin</code> (e.g. <code>admin@gmail.com</code> / your password).
-                                <br />
-                                Set <code>isDemo = true</code> on that row for a read-only demo admin (can view everything, cannot change data).
-                            </div>
-                            <div className="bg-primary p-2 rounded text-white small">
-                                Replace demo emails/passwords with your own seeded users as needed.
-                            </div>
+                        <Toast.Body className="small">
+                            <p className="mb-2"><strong>Patient:</strong> testuser@gmail.com / 123456</p>
+                            <p className="mb-0"><strong>Doctor:</strong> doctor@gmail.com / 123456</p>
                         </Toast.Body>
                     </Toast>
-                    <h2 className="title">Sign in</h2>
-                    <div className="input-field">
-                        <span className="fIcon"><FaEnvelope /></span>
-                        <input {...register('email', { required: true })} placeholder="Enter Your Email" type="email" />
+                    <h2 className="auth-title">Welcome back</h2>
+                    <p className="auth-subtitle mb-4">Sign in to your account to continue</p>
+                    
+                    <div className="auth-input-group mb-3">
+                        <span className="auth-input-icon"><FaEnvelope /></span>
+                        <input 
+                            {...register('email', { required: true })} 
+                            placeholder="Email address" 
+                            type="email" 
+                            className="auth-input" 
+                        />
                     </div>
-                    {errors.email && <span className="text-danger">This field is required</span>}
-                    <div className="input-field">
-                        <span className="fIcon"><FaLock /></span>
-                        <input {...register('password', { required: true })} type="password" placeholder="Enter Your Password" />
+                    {errors.email && <span className="text-danger small mb-2 d-block">This field is required</span>}
+                    
+                    <div className="auth-input-group mb-3">
+                        <span className="auth-input-icon"><FaLock /></span>
+                        <input 
+                            {...register('password', { required: true })} 
+                            type="password" 
+                            placeholder="Password" 
+                            className="auth-input" 
+                        />
                     </div>
-                    {errors.password && <span className="text-danger">This field is required</span>}
-                    {infoError && <p className="text-danger">{infoError}</p>}
-                    <div onClick={handleShowForgotPassword} className="text-bold" style={{ cursor: 'pointer', color: '#4C25F5' }}>
-                        Forgot Password ?
+                    {errors.password && <span className="text-danger small mb-2 d-block">This field is required</span>}
+                    {infoError && <p className="text-danger small mb-2">{infoError}</p>}
+                    
+                    <div className="text-end mb-4">
+                        <button type="button" onClick={handleShowForgotPassword} className="auth-text-link">Forgot Password?</button>
                     </div>
-                    <button className="iBtn" type="submit" value="sign In">
-                        {isLoading ? <Spinner animation="border" variant="info" /> : 'Sign In'}
+                    <button className="auth-btn-primary w-100" type="submit">
+                        {isLoading ? <Spinner size="sm" animation="border" /> : 'Sign In'}
                     </button>
-                    <p className="social-text">Or Sign in with social platforms</p>
-                    <SocialSignUp handleResponse={handleResponse} />
                 </form>
             )}
-        </>
+        </div>
     );
 };
 

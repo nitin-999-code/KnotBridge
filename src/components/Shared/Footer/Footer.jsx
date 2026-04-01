@@ -50,15 +50,15 @@ const Footer = () => {
 								<h3 className="footer-title">Contact us</h3>
 								<div className="footer-contact__item">
 									<FaMapMarkerAlt className="footer-contact__icon" />
-									<p>121, Mirzapur Union Office,<br />Sylhet, Bangladesh 3100</p>
+									<p>Kalewadi, Pune, Maharashtra 411017</p>
 								</div>
 								<div className="footer-contact__item">
 									<FaPhoneAlt className="footer-contact__icon" />
-									<p><a href="tel:+1 (555) 123-4567">+1 (555) 123-4567</a></p>
+									<p><a href="tel:+91 98765 43210">+91 98765 43210</a></p>
 								</div>
 								<div className="footer-contact__item">
 									<FaEnvelope className="footer-contact__icon" />
-									<p><a href="mailto:ujjalzaman@gmail.com">ujjalzaman@gmail.com</a></p>
+									<p><a href="mailto:hello@medibook.com">hello@medibook.com</a></p>
 								</div>
 							</div>
 						</div>
@@ -70,7 +70,7 @@ const Footer = () => {
 					<div className="row align-items-center">
 						<div className="col-12 col-md-6 text-center text-md-start">
 							<p className="footer-copyright">
-								&copy; {new Date().getFullYear()} All rights reserved.
+								&copy; {new Date().getFullYear()} MediBook. All rights reserved.
 							</p>
 						</div>
 						<div className="col-12 col-md-6">

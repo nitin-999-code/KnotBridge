@@ -5,134 +5,133 @@ import { useDebounced } from '../../redux/hooks';
 import { Empty, Pagination, Spin, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import Header from '../Shared/Header/Header';
-import SubHeader from '../Shared/SubHeader';
 import { truncate } from '../../utils/truncate';
 import { FaUser, FaCalendarAlt, FaArrowRight, FaSearch } from 'react-icons/fa';
 import moment from 'moment';
 import './Blog.css';
 
 const Blog = () => {
-	const [page, setPage] = useState(1);
-	const [size, setSize] = useState(9);
-	const [searchTerm, setSearchTerm] = useState('');
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(9);
+    const [searchTerm, setSearchTerm] = useState('');
+    const debouncedTerm = useDebounced({ searchQuery: searchTerm, delay: 600 });
 
-	const debouncedTerm = useDebounced({ searchQuery: searchTerm, delay: 600 });
+    const query = {
+        limit: size,
+        page,
+        ...(debouncedTerm && { searchTerm: debouncedTerm })
+    };
 
-	const query = {
-		limit: size,
-		page,
-		...(debouncedTerm && { searchTerm: debouncedTerm })
-	};
+    const { data, isError, isLoading } = useGetAllBlogsQuery(query);
+    const blogData = data?.blogs;
+    const meta = data?.meta;
+    const total = meta?.total ?? 0;
 
-	const { data, isError, isLoading } = useGetAllBlogsQuery(query);
-	const blogData = data?.blogs;
-	const meta = data?.meta;
-	const total = meta?.total ?? 0;
+    const onPageChange = (newPage, newPageSize) => {
+        setPage(newPage);
+        if (newPageSize !== size) setSize(newPageSize);
+    };
 
-	const onPageChange = (newPage, newPageSize) => {
-		setPage(newPage);
-		if (newPageSize !== size) setSize(newPageSize);
-	};
+    let content = null;
+    if (isLoading) {
+        content = (
+            <div className="text-center py-5 w-100">
+                <Spin size="large" />
+                <p className="mt-3 text-muted">Loading posts...</p>
+            </div>
+        );
+    } else if (isError) {
+        content = (
+            <div className="text-center py-5 w-100">
+                <p className="text-danger">Unable to load posts. Please try again later.</p>
+            </div>
+        );
+    } else if (!blogData || blogData.length === 0) {
+        content = (
+            <div className="text-center py-5 w-100">
+                <Empty description="No blog posts found" />
+            </div>
+        );
+    } else {
+        content = blogData.map((item) => (
+            <div className="col-lg-4 col-md-6 mb-4" key={item.id}>
+                <div className="blog-card-modern">
+                    <Link to={`/blog/${item.id}`} className="blog-card-img-wrap">
+                        {item.img ? (
+                            <img src={item.img} alt={item.title} className="blog-card-img" />
+                        ) : (
+                            <div className="blog-card-placeholder text-center">MediBook Blog</div>
+                        )}
+                    </Link>
+                    <div className="blog-card-body">
+                        <div className="blog-card-meta mb-2">
+                            <span><FaUser /> {item.user?.firstName} {item.user?.lastName}</span>
+                            <span><FaCalendarAlt /> {moment(item.createdAt).format('MMM D, YYYY')}</span>
+                        </div>
+                        <Link to={`/blog/${item.id}`} className="blog-card-title d-block mb-3">
+                            {truncate(item.title, 60)}
+                        </Link>
+                        <p className="blog-card-text text-muted mb-4">{truncate(item.description, 100)}</p>
+                        <Link to={`/blog/${item.id}`} className="blog-card-link">
+                            Read more <FaArrowRight className="ms-1" />
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        ));
+    }
 
-	let content = null;
-	if (isLoading) {
-		content = (
-			<div className="blog-loading">
-				<Spin size="large" />
-				<p>Loading posts...</p>
-			</div>
-		);
-	} else if (isError) {
-		content = (
-			<div className="blog-error">
-				<p>Unable to load posts. Please try again later.</p>
-			</div>
-		);
-	} else if (!blogData || blogData.length === 0) {
-		content = (
-			<div className="blog-empty">
-				<Empty description="No blog posts found" />
-			</div>
-		);
-	} else {
-		content = blogData.map((item) => (
-			<div className="col-lg-4 col-md-6 mb-4" key={item.id}>
-				<article className="blog-post-card">
-					<Link to={`/blog/${item.id}`} className="blog-post-card__image-link">
-						<div className="blog-post-card__image">
-							{item.img ? (
-								<img src={item.img} alt={item.title} className="img-fluid" />
-							) : (
-								<div className="blog-post-card__image-placeholder">Blog</div>
-							)}
-						</div>
-					</Link>
-					<div className="blog-post-card__body">
-						<div className="blog-post-card__meta">
-							<span className="blog-post-card__meta-item">
-								<FaUser /> {item.user?.firstName} {item.user?.lastName}
-							</span>
-							<span className="blog-post-card__meta-item">
-								<FaCalendarAlt /> {moment(item.createdAt).format('MMM D, YYYY')}
-							</span>
-						</div>
-						<Link to={`/blog/${item.id}`} className="blog-post-card__title">
-							{truncate(item.title, 60)}
-						</Link>
-						<p className="blog-post-card__excerpt">{truncate(item.description, 120)}</p>
-						<Link to={`/blog/${item.id}`} className="blog-post-card__read-more">
-							Read more <FaArrowRight />
-						</Link>
-					</div>
-				</article>
-			</div>
-		));
-	}
+    return (
+        <div className="blog-page-modern">
+            <Header />
 
-	return (
-		<>
-			<Header />
-			<SubHeader title="Blog" subtitle="Health tips, news, and insights from our team" />
+            <section className="blog-hero">
+                <div className="container text-center">
+                    <h1 className="blog-hero-title">Health Insights & News</h1>
+                    <div className="title-underline"></div>
+                    <p className="blog-hero-subtitle">Health tips, news, and insights from our team of experts.</p>
+                </div>
+            </section>
 
-			<section className="blog-page">
-				<div className="container">
-					<div className="blog-header">
-						<div className="blog-search-wrap">
-							<Input
-								size="large"
-								placeholder="Search blog posts..."
-								prefix={<FaSearch />}
-								value={searchTerm}
-								onChange={(e) => setSearchTerm(e.target.value)}
-								className="blog-search-input"
-								allowClear
-							/>
-						</div>
-					</div>
+            <section className="blog-content-section py-5">
+                <div className="container">
+                    <div className="row justify-content-center mb-5">
+                        <div className="col-md-8 col-lg-6">
+                            <Input
+                                size="large"
+                                placeholder="Search articles..."
+                                prefix={<FaSearch className="text-muted" />}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="blog-search-box"
+                                allowClear
+                            />
+                        </div>
+                    </div>
 
-					<div className="row">
-						{content}
-					</div>
+                    <div className="row">
+                        {content}
+                    </div>
 
-					{!isLoading && !isError && blogData && blogData.length > 0 && total > 0 && (
-						<div className="blog-pagination">
-							<Pagination
-								current={page}
-								pageSize={size}
-								total={total}
-								onChange={onPageChange}
-								showSizeChanger
-								showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} posts`}
-								pageSizeOptions={[6, 9, 12, 18]}
-							/>
-						</div>
-					)}
-				</div>
-			</section>
+                    {!isLoading && !isError && blogData && blogData.length > 0 && total > 0 && (
+                        <div className="d-flex justify-content-center mt-5">
+                            <Pagination
+                                current={page}
+                                pageSize={size}
+                                total={total}
+                                onChange={onPageChange}
+                                showSizeChanger
+                                showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} posts`}
+                                pageSizeOptions={[6, 9, 12, 18]}
+                            />
+                        </div>
+                    )}
+                </div>
+            </section>
 
-			<Footer />
-		</>
-	);
+            <Footer />
+        </div>
+    );
 };
 
 export default Blog;

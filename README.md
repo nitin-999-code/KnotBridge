@@ -1,4 +1,4 @@
-# DoctorOnCall — Online doctor appointments
+# MediBook — Online doctor appointments
 
 **A full-stack web app where patients book visits, doctors manage schedules and prescriptions, and admins oversee the system — all in one place.**
 
@@ -188,7 +188,7 @@ Older setup steps are also shown in this video (database provider may differ; **
 
 ## Screenshots
 
-![DoctorOnCall overview](https://github.com/Ujjalzaman/Doctor-Appointment/assets/49386888/eeed56ce-3d9a-464d-91e5-588ea81ec5c0)
+![MediBook overview](https://github.com/Ujjalzaman/Doctor-Appointment/assets/49386888/eeed56ce-3d9a-464d-91e5-588ea81ec5c0)
 
 ---
 

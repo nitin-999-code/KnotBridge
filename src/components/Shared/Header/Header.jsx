@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import './index.css';
 import useAuthCheck from '../../../redux/hooks/useAuthCheck';
-import TopHeader from '../TopHeader/TopHeader';
+
 import { Link, useNavigate } from 'react-router-dom';
 import img from '../../../images/logo.png';
 import avatar from '../../../images/avatar.jpg';
@@ -95,9 +95,7 @@ const Header = () => {
 
     return (
         <>
-            <div className={`navbar navbar-expand-lg navbar-light ${!show && 'hideTopHeader'}`} expand="lg">
-                <TopHeader />
-            </div>
+
             <header id="header" className={`fixed-top ${!show && 'stickyHeader'}`}>
                 <div className="container d-flex align-items-center">
                     <Link to={'/'} className="logo me-auto">
