@@ -1,6 +1,5 @@
 import { Model, Types } from "mongoose";
-import { IPatient } from "../patient/patient.interface";
-import { IDoctor } from "../doctor/doctor.interface";
+import { Patient as IPatient, Doctor as IDoctor } from "@prisma/client";
 
 export interface IMadicalHistory {
     patient: Types.ObjectId | IPatient;
