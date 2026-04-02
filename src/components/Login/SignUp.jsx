@@ -105,7 +105,8 @@ const SignUp = ({ setSignUp }) => {
                 setSignUp(false);
             }
         } catch (error) {
-            message.error("Email Already Exist !!");
+            const errorMessage = error?.data?.message || "Registration failed. Please try again.";
+            message.error(errorMessage);
         } finally {
             setLoading(false);
         }
