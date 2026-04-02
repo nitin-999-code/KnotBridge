@@ -1,84 +1,121 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './AdminSidebar.css';
-import { FaHome } from "react-icons/fa";
-import { FaListUl } from "react-icons/fa";
-import { FaPeopleArrows } from "react-icons/fa";
-import { FaRegUser } from "react-icons/fa";
-import { FaUserAstronaut } from "react-icons/fa";
-import { FaRegStar } from "react-icons/fa";
-import { FaBriefcase } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import {
+	FaHome,
+	FaCalendarCheck,
+	FaStar,
+	FaUserMd,
+	FaUsers,
+	FaStethoscope,
+	FaMoneyBillWave,
+	FaUserCircle,
+	FaBars,
+	FaTimes,
+	FaHeartbeat,
+	FaClipboardList,
+} from 'react-icons/fa';
+import { Link, useLocation } from 'react-router-dom';
 
 const AdminSidebar = () => {
-    return (
-        <div className="sidebar" id="sidebar">
-            <div className="sidebar-inner slimscroll">
-                <div id="sidebar-menu" className="sidebar-menu">
-                    <ul>
-                        <li className="menu-title">
-                            <span>Main</span>
-                        </li>
-                        <li className="active">
-                            <Link to={'/admin/dashboard'}>
-                                <FaHome /> <span>Dashboard</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to={'/admin/appointments'}>
-                                <FaListUl /> <span>Appointments</span>
-                            </Link>
+	const [isOpen, setIsOpen] = useState(false);
+	const location = useLocation();
 
+	const menuSections = [
+		{
+			title: 'Overview',
+			items: [
+				{ path: '/admin/dashboard', icon: <FaHome />, label: 'Dashboard & analytics' },
+			],
+		},
+		{
+			title: 'Operations',
+			items: [
+				{ path: '/admin/appointments', icon: <FaCalendarCheck />, label: 'All appointments' },
+				{ path: '/admin/transaction', icon: <FaMoneyBillWave />, label: 'Payments & invoices' },
+			],
+		},
+		{
+			title: 'People & care',
+			items: [
+				{ path: '/admin/doctors', icon: <FaUserMd />, label: 'Doctors (verify, edit)' },
+				{ path: '/admin/patients', icon: <FaUsers />, label: 'Patients (view, export)' },
+				{ path: '/admin/specialites', icon: <FaStethoscope />, label: 'Specialties' },
+			],
+		},
+		{
+			title: 'Engagement',
+			items: [
+				{ path: '/admin/reviews', icon: <FaStar />, label: 'Reviews & ratings' },
+			],
+		},
+	];
 
-                        </li>
-                        <li>
-                            <Link to={'/admin/specialites'}>
-                                <FaPeopleArrows /> <span>Specialities</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to={'/admin/doctors'}>
-                                <FaUserAstronaut /> <span>Doctors</span>
-                            </Link>
+	const bottomItems = [
+		{ path: '/track-appointment', icon: <FaHeartbeat />, label: 'Track appointment (public)' },
+		{ path: '/doctors', icon: <FaClipboardList />, label: 'Public doctor search' },
+	];
 
-                        </li>
-                        <li>
-                            <Link to={'/admin/patients'}>
-                                <FaRegUser /> <span>Patients</span>
-                            </Link>
+	const toggleSidebar = () => setIsOpen(!isOpen);
 
-                        </li>
-                        <li>
-                            <Link to={'/admin/reviews'}>
-                                <FaRegStar /> <span>Reviews</span>
-                            </Link>
+	return (
+		<>
+			<button type="button" className="sidebar-toggle-mobile" onClick={toggleSidebar} aria-label="Toggle menu">
+				{isOpen ? <FaTimes /> : <FaBars />}
+			</button>
 
-                        </li>
-                        <li>
-                            <Link to={'/admin/transaction'}>
-                                <FaBriefcase /><span>Transactions</span>
-                            </Link>
+			<div className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
+				<div className="sidebar-inner">
+					<div className="sidebar-logo">
+						<h2>DocCare Admin</h2>
+						<p>Full platform control — doctors, patients, visits & payments</p>
+					</div>
 
-                        </li>
+					<div className="sidebar-menu">
+						<ul>
+							{menuSections.map((section) => (
+								<React.Fragment key={section.title}>
+									<li className="menu-title">
+										<span>{section.title}</span>
+									</li>
+									{section.items.map((item) => (
+										<li key={item.path} className={location.pathname === item.path ? 'active' : ''}>
+											<Link to={item.path} onClick={() => setIsOpen(false)}>
+												{item.icon}
+												<span>{item.label}</span>
+											</Link>
+										</li>
+									))}
+								</React.Fragment>
+							))}
 
-                        <li className="submenu">
-                            <a href="#"><i className="fe fe-document"></i> <span> Reports</span> <span className="menu-arrow"></span></a>
-                            <ul style={{ display: "none" }}>
-                                <li><a >Invoice Reports</a></li>
-                            </ul>
-                        </li>
-                        <li className="menu-title">
-                            <span>Pages</span>
-                        </li>
-                        <li className='text-white'>
-                            <Link to={'/admin/profile'}>
-                                <FaRegUser /> <span>Profile</span>
-                            </Link>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    )
-}
+							<li className="menu-title">
+								<span>Shortcuts</span>
+							</li>
+							{bottomItems.map((item) => (
+								<li key={item.path} className={location.pathname === item.path ? 'active' : ''}>
+									<Link to={item.path} onClick={() => setIsOpen(false)}>
+										{item.icon}
+										<span>{item.label}</span>
+									</Link>
+								</li>
+							))}
 
-export default AdminSidebar
+							<li className="menu-title">
+								<span>Account</span>
+							</li>
+							<li className={location.pathname === '/admin/profile' ? 'active' : ''}>
+								<Link to="/admin/profile" onClick={() => setIsOpen(false)}>
+									<FaUserCircle />
+									<span>Admin profile</span>
+								</Link>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			{isOpen && <div className="sidebar-overlay" onClick={() => setIsOpen(false)} role="presentation" />}
+		</>
+	);
+};
+
+export default AdminSidebar;

@@ -1,31 +1,29 @@
-import React from 'react'
-import DoctorDashboardSidebar from '../../UI/DoctorDashboardSidebar'
-import Navbar from '../../Shared/Navbar/Navbar';
-import Footer from '../../Shared/Footer/Footer';
-import BreadCrumb from '../../UI/BreadCrumb';
-const DashboardLayout = ({children}) => {
-	return (
-		<>
-			<Navbar />
-			<BreadCrumb/>
-			<div class="content">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
-							<DoctorDashboardSidebar />
-						</div>
+import React from 'react';
+import DashboardSidebar from '../../UI/DashboardSidebar';
+import Header from '../../Shared/Header/Header';
+import DoctorProfileCompletionGate from '../DoctorProfileCompletionGate';
+import './DashboardLayout.css';
 
-						<div class="col-md-7 col-lg-8 col-xl-9">
-							{children}
-						</div>
-					</div>
+const DashboardLayout = ({ children }) => {
+    return (
+        <>
+            <Header />
+            <div className="dashboard-wrapper">
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-lg-3 col-xl-3">
+                            <DashboardSidebar />
+                        </div>
+                        <div className="col-lg-9 col-xl-9">
+                            <div className="dashboard-content">
+                                <DoctorProfileCompletionGate>{children}</DoctorProfileCompletionGate>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+};
 
-				</div>
-
-			</div>
-			<Footer />
-		</>
-	)
-}
-
-export default DashboardLayout
+export default DashboardLayout;

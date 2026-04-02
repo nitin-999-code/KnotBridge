@@ -1,354 +1,348 @@
-import React from 'react';
-import './ProfileSetting.css';
-import img from '../../../images/john.png';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../DashboardLayout/DashboardLayout';
+import useAuthCheck from '../../../redux/hooks/useAuthCheck';
+import PatientProfileSetting from './PatientProfileSetting';
+import DoctorProfileSetting from './DoctorProfileSetting';
+import { Card, Form, Input, Button, Select, DatePicker, message, Avatar, Tabs } from 'antd';
+import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
+import { useUpdateDoctorMutation } from '../../../redux/api/doctorApi';
+import { useUpdatePatientMutation } from '../../../redux/api/patientApi';
+import ImageUploadWithCrop from '../../UI/ImageUploadWithCrop';
+import moment from 'moment';
+import { doctorSpecialistOptions } from '../../../constant/global';
 
 const ProfileSetting = () => {
+    const { role, data } = useAuthCheck();
+    const [form] = Form.useForm();
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(data?.img || null);
+    const [isImageModalVisible, setIsImageModalVisible] = useState(false);
+    const [selectedServices, setSelectedServices] = useState([]);
+    
+    const [updateDoctor, { isLoading: doctorLoading }] = useUpdateDoctorMutation();
+    const [updatePatient, { isLoading: patientLoading }] = useUpdatePatientMutation();
+
+    const isLoading = role === 'doctor' ? doctorLoading : patientLoading;
+
+    useEffect(() => {
+        if (data) {
+            form.setFieldsValue({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                phone: data.phone,
+                gender: data.gender,
+                dob: data.dob ? moment(data.dob) : null,
+                address: data.address,
+                city: data.city,
+                state: data.state,
+                country: data.country,
+                postalCode: data.postalCode,
+                ...(role === 'doctor' && {
+                    biography: data.biography,
+                    clinicName: data.clinicName,
+                    clinicAddress: data.clinicAddress,
+                    price: data.price,
+                    specialization: data.specialization,
+                    degree: data.degree,
+                    college: data.college,
+                    completionYear: data.completionYear,
+                    experienceHospitalName: data.experienceHospitalName,
+                    expericenceStart: data.expericenceStart,
+                    expericenceEnd: data.expericenceEnd,
+                    designation: data.designation,
+                    award: data.award,
+                    awardYear: data.awardYear,
+                    registration: data.registration,
+                    year: data.year,
+                }),
+            });
+            if (role === 'doctor' && data.services) {
+                setSelectedServices(data.services.split(','));
+            }
+        }
+    }, [data, form, role]);
+
+    const handleImageCropped = (file, preview) => {
+        setImageFile(file);
+        setImagePreview(preview);
+    };
+
+    const handleSubmit = async (values) => {
+        try {
+            const formData = new FormData();
+            
+            if (imageFile) {
+                formData.append('file', imageFile);
+            }
+
+            const dataToSubmit = {
+                ...values,
+                dob: values.dob ? moment(values.dob).format('YYYY-MM-DD') : undefined,
+                ...(role === 'doctor' && { services: selectedServices.join(',') }),
+            };
+
+            formData.append('data', JSON.stringify(dataToSubmit));
+
+            if (role === 'doctor') {
+                await updateDoctor({ data: formData, id: data.id }).unwrap();
+            } else {
+                await updatePatient({ data: formData, id: data.id }).unwrap();
+            }
+
+            message.success('Profile updated successfully!');
+        } catch (error) {
+            message.error('Failed to update profile');
+        }
+    };
+
     return (
         <DashboardLayout>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Basic Information</h4>
-                    <div class="row form-row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <div class="change-avatar">
-                                    <div class="profile-img">
-                                        <img src={img} alt="User Image" />
-                                    </div>
-                                    <div class="upload-img">
-                                        <div class="change-photo-btn">
-                                            <span><i class="fa fa-upload"></i> Upload Photo</span>
-                                            <input type="file" class="upload" />
-                                        </div>
-                                        <small class="form-text text-muted">Allowed JPG, GIF or PNG. Max size of 2MB</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Username <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" readonly />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" readonly />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>First Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Last Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Phone Number</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Gender</label>
-                                <select class="form-control select">
-                                    <option>Select</option>
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-0">
-                                <label>Date of Birth</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
+            <div className="dashboard-card">
+                <div className="dashboard-card-header">
+                    <h3 className="dashboard-card-title">Profile Settings</h3>
                 </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">About Me</h4>
-                    <div class="form-group mb-0">
-                        <label>Biography</label>
-                        <textarea class="form-control" rows="5"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Clinic Info</h4>
-                    <div class="row form-row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Clinic Name</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Clinic Address</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Clinic Images</label>
-                                <form action="#" class="dropzone"></form>
-                            </div>
-                            <div class="upload-wrap">
-                                <div class="upload-images">
-                                    <img src="assets/img/features/feature-01.jpg" alt="Upload Image" />
-                                    <a href="javascript:void(0);" class="btn btn-icon btn-danger btn-sm"><i class="far fa-trash-alt"></i></a>
-                                </div>
-                                <div class="upload-images">
-                                    <img src="assets/img/features/feature-02.jpg" alt="Upload Image" />
-                                    <a href="javascript:void(0);" class="btn btn-icon btn-danger btn-sm"><i class="far fa-trash-alt"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card contact-card">
-                <div class="card-body">
-                    <h4 class="card-title">Contact Details</h4>
-                    <div class="row form-row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Address Line 1</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Address Line 2</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">City</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">State / Province</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Country</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Postal Code</label>
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Pricing</h4>
-
-                    <div class="form-group mb-0">
-                        <div id="pricing_select">
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="price_free" name="rating_option" class="custom-control-input" value="price_free" checked />
-                                <label class="custom-control-label" for="price_free">Free</label>
-                            </div>
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" id="price_custom" name="rating_option" value="custom_price" class="custom-control-input" />
-                                <label class="custom-control-label" for="price_custom">Custom Price (per hour)</label>
-                            </div>
-                        </div>
-
+                <Card>
+                    <div className="profile-header-section mb-4">
+                        <Avatar src={imagePreview} icon={<FaUser />} size={120} />
+                        <Button
+                            type="primary"
+                            onClick={() => setIsImageModalVisible(true)}
+                            className="mt-3"
+                        >
+                            Change Photo
+                        </Button>
                     </div>
 
-                    <div class="row custom_price_cont" id="custom_price_cont" style={{display: "none"}}>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" id="custom_rating_input" name="custom_rating_count" value="" placeholder="20" />
-                            <small class="form-text text-muted">Custom price you can add</small>
-                        </div>
-                    </div>
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        onFinish={handleSubmit}
+                    >
+                        <Tabs
+                            items={[
+                                {
+                                    key: '1',
+                                    label: 'Basic Information',
+                                    children: (
+                                        <>
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <Form.Item
+                                                        label="First Name"
+                                                        name="firstName"
+                                                        rules={[{ required: true, message: 'Please enter first name' }]}
+                                                    >
+                                                        <Input prefix={<FaUser />} size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <Form.Item
+                                                        label="Last Name"
+                                                        name="lastName"
+                                                        rules={[{ required: true, message: 'Please enter last name' }]}
+                                                    >
+                                                        <Input prefix={<FaUser />} size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                            </div>
 
-                </div>
-            </div>
-            <div class="card services-card">
-                <div class="card-body">
-                    <h4 class="card-title">Services and Specialization</h4>
-                    <div class="form-group">
-                        <label>Services</label>
-                        <input type="text" data-role="tagsinput" class="input-tags form-control" placeholder="Enter Services" name="services" value="Tooth cleaning " id="services" />
-                        <small class="form-text text-muted">Note : Type & Press enter to add new services</small>
-                    </div>
-                    <div class="form-group mb-0">
-                        <label>Specialization </label>
-                        <input class="input-tags form-control" type="text" data-role="tagsinput" placeholder="Enter Specialization" name="specialist" value="Children Care,Dental Care" id="specialist" />
-                        <small class="form-text text-muted">Note : Type & Press  enter to add new specialization</small>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Education</h4>
-                    <div class="education-info">
-                        <div class="row form-row education-cont">
-                            <div class="col-12 col-md-10 col-lg-11">
-                                <div class="row form-row">
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="form-group">
-                                            <label>Degree</label>
-                                            <input type="text" class="form-control" />
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="form-group">
-                                            <label>College/Institute</label>
-                                            <input type="text" class="form-control" />
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="form-group">
-                                            <label>Year of Completion</label>
-                                            <input type="text" class="form-control" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <Form.Item
+                                                        label="Email"
+                                                        name="email"
+                                                        rules={[
+                                                            { required: true, message: 'Please enter email' },
+                                                            { type: 'email', message: 'Please enter valid email' }
+                                                        ]}
+                                                    >
+                                                        <Input prefix={<FaEnvelope />} size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <Form.Item label="Phone" name="phone">
+                                                        <Input prefix={<FaPhone />} size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                            </div>
+
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <Form.Item label="Gender" name="gender">
+                                                        <Select size="large">
+                                                            <Select.Option value="male">Male</Select.Option>
+                                                            <Select.Option value="female">Female</Select.Option>
+                                                            <Select.Option value="other">Other</Select.Option>
+                                                        </Select>
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <Form.Item label="Date of Birth" name="dob">
+                                                        <DatePicker size="large" style={{ width: '100%' }} format="YYYY-MM-DD" />
+                                                    </Form.Item>
+                                                </div>
+                                            </div>
+
+                                            {role === 'doctor' && (
+                                                <Form.Item label="Biography" name="biography">
+                                                    <Input.TextArea rows={4} />
+                                                </Form.Item>
+                                            )}
+                                        </>
+                                    ),
+                                },
+                                {
+                                    key: '2',
+                                    label: 'Contact Details',
+                                    children: (
+                                        <>
+                                            <Form.Item label="Address" name="address">
+                                                <Input prefix={<FaMapMarkerAlt />} size="large" />
+                                            </Form.Item>
+
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <Form.Item label="City" name="city">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <Form.Item label="State/Province" name="state">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                            </div>
+
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <Form.Item label="Country" name="country">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <Form.Item label="Postal Code" name="postalCode">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                            </div>
+
+                                            {role === 'doctor' && (
+                                                <>
+                                                    <h4 className="mt-4 mb-3">Clinic Information</h4>
+                                                    <div className="row">
+                                                        <div className="col-md-6">
+                                                            <Form.Item label="Clinic Name" name="clinicName">
+                                                                <Input size="large" />
+                                                            </Form.Item>
+                                                        </div>
+                                                        <div className="col-md-6">
+                                                            <Form.Item label="Clinic Address" name="clinicAddress">
+                                                                <Input size="large" />
+                                                            </Form.Item>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </>
+                                    ),
+                                },
+                                ...(role === 'doctor' ? [{
+                                    key: '3',
+                                    label: 'Professional Details',
+                                    children: (
+                                        <>
+                                            <h4 className="mb-3">Services & Specialization</h4>
+                                            <Form.Item label="Services" name="services">
+                                                <Select
+                                                    mode="multiple"
+                                                    size="large"
+                                                    placeholder="Select services"
+                                                    value={selectedServices}
+                                                    onChange={setSelectedServices}
+                                                    options={doctorSpecialistOptions}
+                                                />
+                                            </Form.Item>
+
+                                            <Form.Item label="Specialization" name="specialization">
+                                                <Input size="large" />
+                                            </Form.Item>
+
+                                            <Form.Item label="Consultation Fee (30 min)" name="price">
+                                                <Input type="number" prefix="$" size="large" />
+                                            </Form.Item>
+
+                                            <h4 className="mt-4 mb-3">Education</h4>
+                                            <div className="row">
+                                                <div className="col-md-4">
+                                                    <Form.Item label="Degree" name="degree">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-4">
+                                                    <Form.Item label="College/Institute" name="college">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-4">
+                                                    <Form.Item label="Year of Completion" name="completionYear">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                            </div>
+
+                                            <h4 className="mt-4 mb-3">Experience</h4>
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <Form.Item label="Hospital Name" name="experienceHospitalName">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <Form.Item label="Designation" name="designation">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                            </div>
+
+                                            <div className="row">
+                                                <div className="col-md-6">
+                                                    <Form.Item label="From" name="expericenceStart">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <Form.Item label="To" name="expericenceEnd">
+                                                        <Input size="large" />
+                                                    </Form.Item>
+                                                </div>
+                                            </div>
+                                        </>
+                                    ),
+                                }] : []),
+                            ]}
+                        />
+
+                        <div className="text-center mt-4">
+                            <Button type="primary" htmlType="submit" size="large" loading={isLoading}>
+                                Save Changes
+                            </Button>
                         </div>
-                    </div>
-                    <div class="add-more">
-                        <a href="javascript:void(0);" class="add-education"><i class="fa fa-plus-circle"></i> Add More</a>
-                    </div>
-                </div>
+                    </Form>
+                </Card>
             </div>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Experience</h4>
-                    <div class="experience-info">
-                        <div class="row form-row experience-cont">
-                            <div class="col-12 col-md-10 col-lg-11">
-                                <div class="row form-row">
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="form-group">
-                                            <label>Hospital Name</label>
-                                            <input type="text" class="form-control" />
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="form-group">
-                                            <label>From</label>
-                                            <input type="text" class="form-control" />
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="form-group">
-                                            <label>To</label>
-                                            <input type="text" class="form-control" />
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <div class="form-group">
-                                            <label>Designation</label>
-                                            <input type="text" class="form-control" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="add-more">
-                        <a href="javascript:void(0);" class="add-experience"><i class="fa fa-plus-circle"></i> Add More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Awards</h4>
-                    <div class="awards-info">
-                        <div class="row form-row awards-cont">
-                            <div class="col-12 col-md-5">
-                                <div class="form-group">
-                                    <label>Awards</label>
-                                    <input type="text" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-5">
-                                <div class="form-group">
-                                    <label>Year</label>
-                                    <input type="text" class="form-control" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="add-more">
-                        <a href="javascript:void(0);" class="add-award"><i class="fa fa-plus-circle"></i> Add More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Memberships</h4>
-                    <div class="membership-info">
-                        <div class="row form-row membership-cont">
-                            <div class="col-12 col-md-10 col-lg-5">
-                                <div class="form-group">
-                                    <label>Memberships</label>
-                                    <input type="text" class="form-control" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="add-more">
-                        <a href="javascript:void(0);" class="add-membership"><i class="fa fa-plus-circle"></i> Add More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Registrations</h4>
-                    <div class="registrations-info">
-                        <div class="row form-row reg-cont">
-                            <div class="col-12 col-md-5">
-                                <div class="form-group">
-                                    <label>Registrations</label>
-                                    <input type="text" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-5">
-                                <div class="form-group">
-                                    <label>Year</label>
-                                    <input type="text" class="form-control" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="add-more">
-                        <a href="javascript:void(0);" class="add-reg"><i class="fa fa-plus-circle"></i> Add More</a>
-                    </div>
-                </div>
-            </div>
-            <div class="submit-section submit-btn-bottom">
-                <button type="submit" class="btn btn-primary submit-btn">Save Changes</button>
-            </div>
+
+            <ImageUploadWithCrop
+                visible={isImageModalVisible}
+                onCancel={() => setIsImageModalVisible(false)}
+                onImageCropped={handleImageCropped}
+                aspect={1}
+                maxSizeMB={0.5}
+                cropShape="round"
+            />
         </DashboardLayout>
-    )
-}
+    );
+};
+
 export default ProfileSetting;

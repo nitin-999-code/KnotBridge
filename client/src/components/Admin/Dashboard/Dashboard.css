@@ -1,83 +1,59 @@
-.dash-widget-icon {
-    align-items: center;
-    display: inline-flex;
-    font-size: 1.875rem;
-    height: 50px;
-    justify-content: center;
-    line-height: 48px;
-    text-align: center;
-    width: 50px;
-	border: 3px solid;
-    border-radius: 50px;
-    padding: 28px;
+.admin-dashboard {
+  padding: 0;
 }
-.avatar-img{
-    height: 20px;
-    width: 20px;
-    object-fit: cover;
+
+.dashboard-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
 }
-.table-avatar a{
-    font-size: 14px;
-    text-decoration: none;
-    color: inherit;
+
+.mt-4 {
+  margin-top: 1.5rem !important;
 }
-.dash-count {
-    font-size: 18px;
-    margin-left: auto;
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
 }
-.dash-widget-info h3 {
-    margin-bottom: 10px;
+
+.status-badge--pending {
+  background: #fff3cd;
+  color: #856404;
 }
-.dash-widget-header {
-    align-items: center;
-    display: flex;
-    margin-bottom: 15px;
+
+.status-badge--scheduled {
+  background: #d1ecf1;
+  color: #0c5460;
 }
-.card-chart .card-body {
-	padding: 8px;
+
+.status-badge--completed {
+  background: #d4edda;
+  color: #155724;
 }
-#morrisArea > svg, #morrisLine > svg  {
-	width: 100%;
+
+.status-badge--cancel,
+.status-badge--cancelled {
+  background: #f8d7da;
+  color: #721c24;
 }
-.activity-feed {
-    list-style: none;
-    margin-bottom: 0;
-    margin-left: 5px;
-    padding: 0;
+
+.status-badge--confirmed {
+  background: #d1f2eb;
+  color: #0f6c59;
 }
-.activity-feed .feed-item {
-    border-left: 2px solid #e4e8eb;
-    padding-bottom: 19px;
-    padding-left: 20px;
-    position: relative;
-}
-.activity-feed .feed-item:last-child {
-	border-color: transparent;
-	padding-bottom: 0;
-}
-.activity-feed .feed-item:after {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: -7px;
-	width: 12px;
-	height: 12px;
-	border-radius: 50%;
-	background-color: #177dff;
-}
-.activity-feed .feed-item .feed-date {
-	display: block;
-	position: relative;
-	color: #777;
-	text-transform: uppercase;
-	font-size: 13px;
- }
-.activity-feed .feed-item .feed-text {
-	color: #777;
-	position: relative;
-}
-.activity-feed .feed-item .feed-text a {
-    color: #333;
-    font-weight: 600;
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .stats-card-value {
+    font-size: 1.5rem;
+  }
+  
+  .stats-card-icon {
+    font-size: 2rem;
+  }
 }

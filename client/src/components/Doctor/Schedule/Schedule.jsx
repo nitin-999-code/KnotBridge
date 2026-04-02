@@ -1,333 +1,336 @@
-import React from 'react';
-import './Schedule.css';
 import DashboardLayout from '../DashboardLayout/DashboardLayout';
+import React, { useEffect, useState } from 'react';
+import { Card, Tag, Button, Empty, message, TimePicker, Modal, Tabs } from 'antd';
+import { useCreateTimeSlotMutation, useGetDoctorTimeSlotQuery, useUpdateTimeSlotMutation } from '../../../redux/api/timeSlotApi';
+import { FaPlus, FaEdit, FaTrash, FaClock } from "react-icons/fa";
+import moment from 'moment';
+import './Schedule.css';
 
 const Schedule = () => {
+    const [activeDay, setActiveDay] = useState('sunday');
+    const [timeSlot, setTimeSlot] = useState([]);
+    const [editTimeSlot, setEditTimeSlot] = useState([]);
+    const [addTimeSlot, setAddTimeSlot] = useState([{ id: 1 }]);
+    const [UpdateTimeSlot, { isError: uIsError, error: uError, isLoading: UIsLoading, isSuccess: uIsSuccess }] = useUpdateTimeSlotMutation();
+    const { data, refetch, isLoading, isError } = useGetDoctorTimeSlotQuery({ day: activeDay });
+    const [createTimeSlot, { isError: AIsError, error, isLoading: AIsLoading, isSuccess }] = useCreateTimeSlotMutation();
+
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    const daysOfWeek = [
+        { key: 'sunday', label: 'Sunday' },
+        { key: 'monday', label: 'Monday' },
+        { key: 'tuesday', label: 'Tuesday' },
+        { key: 'wednesday', label: 'Wednesday' },
+        { key: 'thursday', label: 'Thursday' },
+        { key: 'friday', label: 'Friday' },
+        { key: 'saturday', label: 'Saturday' },
+    ];
+
+    const handleEditOk = () => {
+        if (editTimeSlot.length > 0) {
+            const { toCreate, toUpdate } = editTimeSlot.reduce((acc, cur) => {
+                if (cur.doctorTimeSlotId) {
+                    acc.toUpdate.push(cur);
+                } else {
+                    acc.toCreate.push({ ...cur, day: activeDay })
+                }
+                return acc;
+            }, { toCreate: [], toUpdate: [] });
+            UpdateTimeSlot({ timeSlot: toUpdate, create: toCreate })
+        }
+    };
+
+    useEffect(() => {
+        if (!UIsLoading && uIsError) {
+            message.error(uError?.data?.message)
+        }
+        if (uIsSuccess) {
+            message.success('Successfully Updated Time Slots')
+            setIsEditModalOpen(false);
+            setEditTimeSlot([]);
+            refetch();
+        }
+    }, [uIsSuccess, uIsError, UIsLoading, uError?.data?.message])
+
+    const handleEditStartTime = (id, timeString) => {
+        const findIndex = timeSlot.find(item => item.id === id);
+        const updatedItem = { ...findIndex, startTime: timeString }
+        setEditTimeSlot(prev => {
+            const indexToUpdate = prev.findIndex(item => item.id === id);
+            if (indexToUpdate !== -1) {
+                const updatedArray = [...prev];
+                updatedArray[indexToUpdate] = updatedItem;
+                return updatedArray
+            } else {
+                return [...prev, updatedItem]
+            }
+        })
+    }
+
+    const handleEditEndTime = (id, timeString) => {
+        const findObject = timeSlot.find(item => item.id === id);
+        if (findObject) {
+            const editedObject = editTimeSlot.find(item => item.id === id);
+            const updateObject = editedObject?.id ? { ...editedObject, endTime: timeString } : { ...findObject, endTime: timeString };
+            setEditTimeSlot(prev => {
+                const findIndex = prev.findIndex(item => item.id === id);
+                if (findIndex !== -1) {
+                    const updateArray = [...prev];
+                    updateArray[findIndex] = updateObject;
+                    return updateArray;
+                } else {
+                    return [...prev, updateObject]
+                }
+            })
+        }
+    }
+
+    const handleAddOk = () => {
+        const validTimeSlots = addTimeSlot.filter(slot => slot.startTime && slot.endTime);
+        if (validTimeSlots.length === 0) {
+            message.error('Please add at least one time slot');
+            return;
+        }
+        const timeSlots = validTimeSlots.map(({ id, ...rest }) => rest);
+        const data = {
+            day: activeDay,
+            timeSlot: timeSlots
+        }
+        createTimeSlot({ data });
+    };
+
+    useEffect(() => {
+        if (!AIsLoading && AIsError) {
+            message.error(error?.data?.message)
+        }
+        if (isSuccess) {
+            message.success('Successfully Added Time Slots')
+            setIsAddModalOpen(false);
+            setAddTimeSlot([{ id: 1 }]);
+            refetch();
+        }
+    }, [isSuccess, AIsError, error?.data?.message, AIsLoading])
+
+    const handleAddStartTime = (id, timeString) => {
+        setAddTimeSlot(prev => (prev.map(item => item.id === id ? { ...item, startTime: timeString } : item)));
+    }
+
+    const handleAddEndTime = (id, timeString) => {
+        setAddTimeSlot(prev => prev.map(item => item.id === id ? { ...item, endTime: timeString } : item));
+    }
+
+    const handleDayChange = (day) => {
+        setActiveDay(day);
+        refetch();
+    }
+
+    useEffect(() => {
+        if (data && data[0]?.id) {
+            setTimeSlot(data[0].timeSlot || [])
+        } else {
+            setTimeSlot([]);
+        }
+    }, [data])
+
+    const removeEditSlot = (id) => {
+        setTimeSlot(timeSlot.filter((item) => item.id !== id))
+    }
+
+    const addEditField = () => {
+        const newId = timeSlot.length > 0 ? Math.max(...timeSlot.map(s => s.id)) + 1 : 1;
+        setTimeSlot([...timeSlot, { id: newId }])
+    }
+
+    const removeAddSlot = (id) => {
+        setAddTimeSlot(addTimeSlot.filter((item) => item.id !== id))
+    }
+
+    const addNewSlot = () => {
+        const newId = addTimeSlot.length > 0 ? Math.max(...addTimeSlot.map(s => s.id)) + 1 : 1;
+        setAddTimeSlot([...addTimeSlot, { id: newId }])
+    }
+
+    const openEditModal = () => {
+        if (data && data[0]?.timeSlot) {
+            setTimeSlot(data[0].timeSlot);
+            setIsEditModalOpen(true);
+        } else {
+            message.warning('No schedule available to edit');
+        }
+    };
+
     return (
         <DashboardLayout>
-            <div className="row">
-                <div className="col-sm-12">
-                    <div className="card">
-                        <div className="card-body">
-                            <h4 className="card-title">Schedule Timings</h4>
-                            <div className="profile-box">
-                                <div className="row">
+            <div className="dashboard-card">
+                <div className="dashboard-card-header">
+                    <h3 className="dashboard-card-title">Schedule Timings</h3>
+                    <div className="d-flex gap-2">
+                        <Button 
+                            type="primary" 
+                            icon={<FaPlus />}
+                            onClick={() => setIsAddModalOpen(true)}
+                        >
+                            Add Schedule
+                        </Button>
+                        {data && data[0]?.timeSlot?.length > 0 && (
+                            <Button 
+                                type="default" 
+                                icon={<FaEdit />}
+                                onClick={openEditModal}
+                            >
+                                Edit Schedule
+                            </Button>
+                        )}
+                    </div>
+                </div>
 
-                                    <div className="col-lg-4">
-                                        <div className="form-group">
-                                            <label>Timing Slot Duration</label>
-                                            <select className="select form-control">
-                                                <option>-</option>
-                                                <option>15 mins</option>
-                                                <option selected="selected">30 mins</option>
-                                                <option>45 mins</option>
-                                                <option>1 Hour</option>
-                                            </select>
+                <Tabs
+                    activeKey={activeDay}
+                    onChange={handleDayChange}
+                    items={daysOfWeek.map(day => ({
+                        key: day.key,
+                        label: day.label,
+                    }))}
+                />
+
+                <Card loading={isLoading}>
+                    {isError && <Empty description="Something went wrong loading schedule" />}
+                    
+                    {!isLoading && !isError && data?.length === 0 && (
+                        <Empty description="No schedule set for this day" />
+                    )}
+                    
+                    {!isLoading && !isError && data?.length > 0 && data[0]?.timeSlot && (
+                        <div className="schedule-content">
+                            {data[0]?.maximumPatient && (
+                                <div className="mb-3">
+                                    <h6 className="text-muted">Maximum Patient Limit: {data[0].maximumPatient}</h6>
+                                </div>
+                            )}
+                            <div className="time-slots-grid">
+                                {data[0].timeSlot.map((time, index) => (
+                                    <div key={index} className="time-slot-card">
+                                        <FaClock className="time-icon" />
+                                        <div className="time-range">
+                                            {time?.startTime} - {time?.endTime}
                                         </div>
                                     </div>
-
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <div className="card schedule-widget mb-0">
-
-                                            <div className="schedule-header">
-
-                                                <div className="schedule-nav">
-                                                    <ul className="nav nav-tabs nav-justified">
-                                                        <li className="nav-item">
-                                                            <a className="nav-link" data-toggle="tab" href="#slot_sunday">Sunday</a>
-                                                        </li>
-                                                        <li className="nav-item">
-                                                            <a className="nav-link active" data-toggle="tab" href="#slot_monday">Monday</a>
-                                                        </li>
-                                                        <li className="nav-item">
-                                                            <a className="nav-link" data-toggle="tab" href="#slot_tuesday">Tuesday</a>
-                                                        </li>
-                                                        <li className="nav-item">
-                                                            <a className="nav-link" data-toggle="tab" href="#slot_wednesday">Wednesday</a>
-                                                        </li>
-                                                        <li className="nav-item">
-                                                            <a className="nav-link" data-toggle="tab" href="#slot_thursday">Thursday</a>
-                                                        </li>
-                                                        <li className="nav-item">
-                                                            <a className="nav-link" data-toggle="tab" href="#slot_friday">Friday</a>
-                                                        </li>
-                                                        <li className="nav-item">
-                                                            <a className="nav-link" data-toggle="tab" href="#slot_saturday">Saturday</a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-
-                                            </div>
-                                            <div className="tab-content schedule-cont">
-
-                                                <div id="slot_sunday" className="tab-pane fade">
-                                                    <h4 className="card-title d-flex justify-content-between">
-                                                        <span>Time Slots</span>
-                                                        <a className="edit-link" data-toggle="modal" href="#add_time_slot"><i className="fa fa-plus-circle"></i> Add Slot</a>
-                                                    </h4>
-                                                    <p className="text-muted mb-0">Not Available</p>
-                                                </div>
-                                                <div id="slot_monday" className="tab-pane fade show active">
-                                                    <h4 className="card-title d-flex justify-content-between">
-                                                        <span>Time Slots</span>
-                                                        <a className="edit-link" data-toggle="modal" href="#edit_time_slot"><i className="fa fa-edit mr-1"></i>Edit</a>
-                                                    </h4>
-
-                                                    <div className="doc-times">
-                                                        <div className="doc-slot-list">
-                                                            8:00 pm - 11:30 pm
-                                                            <a href="javascript:void(0)" className="delete_schedule">
-                                                                <i className="fa fa-times"></i>
-                                                            </a>
-                                                        </div>
-                                                        <div className="doc-slot-list">
-                                                            11:30 pm - 1:30 pm
-                                                            <a href="javascript:void(0)" className="delete_schedule">
-                                                                <i className="fa fa-times"></i>
-                                                            </a>
-                                                        </div>
-                                                        <div className="doc-slot-list">
-                                                            3:00 pm - 5:00 pm
-                                                            <a href="javascript:void(0)" className="delete_schedule">
-                                                                <i className="fa fa-times"></i>
-                                                            </a>
-                                                        </div>
-                                                        <div className="doc-slot-list">
-                                                            6:00 pm - 11:00 pm
-                                                            <a href="javascript:void(0)" className="delete_schedule">
-                                                                <i className="fa fa-times"></i>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                                <div id="slot_tuesday" className="tab-pane fade">
-                                                    <h4 className="card-title d-flex justify-content-between">
-                                                        <span>Time Slots</span>
-                                                        <a className="edit-link" data-toggle="modal" href="#add_time_slot"><i className="fa fa-plus-circle"></i> Add Slot</a>
-                                                    </h4>
-                                                    <p className="text-muted mb-0">Not Available</p>
-                                                </div>
-                                                <div id="slot_wednesday" className="tab-pane fade">
-                                                    <h4 className="card-title d-flex justify-content-between">
-                                                        <span>Time Slots</span>
-                                                        <a className="edit-link" data-toggle="modal" href="#add_time_slot"><i className="fa fa-plus-circle"></i> Add Slot</a>
-                                                    </h4>
-                                                    <p className="text-muted mb-0">Not Available</p>
-                                                </div>
-                                                <div id="slot_thursday" className="tab-pane fade">
-                                                    <h4 className="card-title d-flex justify-content-between">
-                                                        <span>Time Slots</span>
-                                                        <a className="edit-link" data-toggle="modal" href="#add_time_slot"><i className="fa fa-plus-circle"></i> Add Slot</a>
-                                                    </h4>
-                                                    <p className="text-muted mb-0">Not Available</p>
-                                                </div>
-                                                <div id="slot_friday" className="tab-pane fade">
-                                                    <h4 className="card-title d-flex justify-content-between">
-                                                        <span>Time Slots</span>
-                                                        <a className="edit-link" data-toggle="modal" href="#add_time_slot"><i className="fa fa-plus-circle"></i> Add Slot</a>
-                                                    </h4>
-                                                    <p className="text-muted mb-0">Not Available</p>
-                                                </div>
-                                                <div id="slot_saturday" className="tab-pane fade">
-                                                    <h4 className="card-title d-flex justify-content-between">
-                                                        <span>Time Slots</span>
-                                                        <a className="edit-link" data-toggle="modal" href="#add_time_slot"><i className="fa fa-plus-circle"></i> Add Slot</a>
-                                                    </h4>
-                                                    <p className="text-muted mb-0">Not Available</p>
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
-                    </div>
-                </div>
+                    )}
+                </Card>
             </div>
 
-            <div className="modal fade custom-modal" id="add_time_slot">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Add Time Slots</h5>
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+            <Modal
+                title="Edit Time Slots"
+                open={isEditModalOpen}
+                onOk={handleEditOk}
+                onCancel={() => setIsEditModalOpen(false)}
+                width={700}
+                confirmLoading={UIsLoading}
+            >
+                <div className="time-slot-editor">
+                    {timeSlot.map((item, index) => (
+                        <div key={index} className="time-slot-row">
+                            <div className="time-picker-group">
+                                <div>
+                                    <label>Start Time</label>
+                                    <TimePicker
+                                        format="HH:mm"
+                                        value={item.startTime ? moment(item.startTime, 'HH:mm') : null}
+                                        onChange={(time, timeString) => handleEditStartTime(item.id, timeString)}
+                                        style={{ width: '100%' }}
+                                        size="large"
+                                    />
+                                </div>
+                                <div>
+                                    <label>End Time</label>
+                                    <TimePicker
+                                        format="HH:mm"
+                                        value={item.endTime ? moment(item.endTime, 'HH:mm') : null}
+                                        onChange={(time, timeString) => handleEditEndTime(item.id, timeString)}
+                                        style={{ width: '100%' }}
+                                        size="large"
+                                    />
+                                </div>
+                            </div>
+                            <Button
+                                danger
+                                icon={<FaTrash />}
+                                onClick={() => removeEditSlot(item.id)}
+                            />
                         </div>
-                        <div className="modal-body">
-                            <form>
-                                <div className="hours-info">
-                                    <div className="row form-row hours-cont">
-                                        <div className="col-12 col-md-10">
-                                            <div className="row form-row">
-                                                <div className="col-12 col-md-6">
-                                                    <div className="form-group">
-                                                        <label>Start Time</label>
-                                                        <select className="form-control">
-                                                            <option>-</option>
-                                                            <option>12.00 am</option>
-                                                            <option>12.30 am</option>
-                                                            <option>1.00 am</option>
-                                                            <option>1.30 am</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div className="col-12 col-md-6">
-                                                    <div className="form-group">
-                                                        <label>End Time</label>
-                                                        <select className="form-control">
-                                                            <option>-</option>
-                                                            <option>12.00 am</option>
-                                                            <option>12.30 am</option>
-                                                            <option>1.00 am</option>
-                                                            <option>1.30 am</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="add-more mb-3">
-                                    <a href="javascript:void(0);" className="add-hours"><i className="fa fa-plus-circle"></i> Add More</a>
-                                </div>
-                                <div className="submit-section text-center">
-                                    <button type="submit" className="btn btn-primary submit-btn">Save Changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    ))}
+                    <Button
+                        type="dashed"
+                        icon={<FaPlus />}
+                        onClick={addEditField}
+                        block
+                        className="mt-3"
+                    >
+                        Add More
+                    </Button>
                 </div>
-            </div>
+            </Modal>
 
-            <div className="modal fade custom-modal" id="edit_time_slot">
-                <div className="modal-dialog modal-dialog-centered">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Edit Time Slots</h5>
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+            <Modal
+                title="Add Time Slots"
+                open={isAddModalOpen}
+                onOk={handleAddOk}
+                onCancel={() => setIsAddModalOpen(false)}
+                width={700}
+                confirmLoading={AIsLoading}
+            >
+                <div className="time-slot-editor">
+                    {addTimeSlot.map((item, index) => (
+                        <div key={index} className="time-slot-row">
+                            <div className="time-picker-group">
+                                <div>
+                                    <label>Start Time</label>
+                                    <TimePicker
+                                        format="HH:mm"
+                                        value={item.startTime ? moment(item.startTime, 'HH:mm') : null}
+                                        onChange={(time, timeString) => handleAddStartTime(item.id, timeString)}
+                                        style={{ width: '100%' }}
+                                        size="large"
+                                    />
+                                </div>
+                                <div>
+                                    <label>End Time</label>
+                                    <TimePicker
+                                        format="HH:mm"
+                                        value={item.endTime ? moment(item.endTime, 'HH:mm') : null}
+                                        onChange={(time, timeString) => handleAddEndTime(item.id, timeString)}
+                                        style={{ width: '100%' }}
+                                        size="large"
+                                    />
+                                </div>
+                            </div>
+                            {addTimeSlot.length > 1 && (
+                                <Button
+                                    danger
+                                    icon={<FaTrash />}
+                                    onClick={() => removeAddSlot(item.id)}
+                                />
+                            )}
                         </div>
-                        <div className="modal-body">
-                            <form>
-                                <div className="hours-info">
-                                    <div className="row form-row hours-cont">
-                                        <div className="col-12 col-md-10">
-                                            <div className="row form-row">
-                                                <div className="col-12 col-md-6">
-                                                    <div className="form-group">
-                                                        <label>Start Time</label>
-                                                        <select className="form-control">
-                                                            <option>-</option>
-                                                            <option selected>12.00 am</option>
-                                                            <option>12.30 am</option>
-                                                            <option>1.00 am</option>
-                                                            <option>1.30 am</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div className="col-12 col-md-6">
-                                                    <div className="form-group">
-                                                        <label>End Time</label>
-                                                        <select className="form-control">
-                                                            <option>-</option>
-                                                            <option>12.00 am</option>
-                                                            <option selected>12.30 am</option>
-                                                            <option>1.00 am</option>
-                                                            <option>1.30 am</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="row form-row hours-cont">
-                                        <div className="col-12 col-md-10">
-                                            <div className="row form-row">
-                                                <div className="col-12 col-md-6">
-                                                    <div className="form-group">
-                                                        <label>Start Time</label>
-                                                        <select className="form-control">
-                                                            <option>-</option>
-                                                            <option>12.00 am</option>
-                                                            <option selected>12.30 am</option>
-                                                            <option>1.00 am</option>
-                                                            <option>1.30 am</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div className="col-12 col-md-6">
-                                                    <div className="form-group">
-                                                        <label>End Time</label>
-                                                        <select className="form-control">
-                                                            <option>-</option>
-                                                            <option>12.00 am</option>
-                                                            <option>12.30 am</option>
-                                                            <option selected>1.00 am</option>
-                                                            <option>1.30 am</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-md-2"><label className="d-md-block d-sm-none d-none">&nbsp;</label><a href="#" className="btn btn-danger trash"><i className="far fa-trash-alt"></i></a></div>
-                                    </div>
-
-                                    <div className="row form-row hours-cont">
-                                        <div className="col-12 col-md-10">
-                                            <div className="row form-row">
-                                                <div className="col-12 col-md-6">
-                                                    <div className="form-group">
-                                                        <label>Start Time</label>
-                                                        <select className="form-control">
-                                                            <option>-</option>
-                                                            <option>12.00 am</option>
-                                                            <option>12.30 am</option>
-                                                            <option selected>1.00 am</option>
-                                                            <option>1.30 am</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div className="col-12 col-md-6">
-                                                    <div className="form-group">
-                                                        <label>End Time</label>
-                                                        <select className="form-control">
-                                                            <option>-</option>
-                                                            <option>12.00 am</option>
-                                                            <option>12.30 am</option>
-                                                            <option>1.00 am</option>
-                                                            <option selected>1.30 am</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-md-2"><label className="d-md-block d-sm-none d-none">&nbsp;</label><a href="#" className="btn btn-danger trash"><i className="far fa-trash-alt"></i></a></div>
-                                    </div>
-
-                                </div>
-
-                                <div className="add-more mb-3">
-                                    <a href="javascript:void(0);" className="add-hours"><i className="fa fa-plus-circle"></i> Add More</a>
-                                </div>
-                                <div className="submit-section text-center">
-                                    <button type="submit" className="btn btn-primary submit-btn">Save Changes</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    ))}
+                    <Button
+                        type="dashed"
+                        icon={<FaPlus />}
+                        onClick={addNewSlot}
+                        block
+                        className="mt-3"
+                    >
+                        Add More
+                    </Button>
                 </div>
-            </div>
+            </Modal>
         </DashboardLayout>
     )
 }
 
-export default Schedule
+export default Schedule;

@@ -1,60 +1,65 @@
-.section-specialities {
-	background-color: rgb(243, 241, 241);
-	padding: 80px 0;
-	margin: 7rem 0;
+.specialities-section {
+    padding: 80px 0;
+    background: var(--white);
 }
-.specialities-slider .slick-slide {
-    display: block;
-    padding: 0 12px;
-    margin-left: 0;
-    margin-right: 20px;
-	margin-top: 10px;
+
+.specialities-header {
+    margin-bottom: 50px;
 }
-.specialities-slider .slick-dots {
-    margin-top: 44px;
-    position: unset;
+
+.specialities-header h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 15px;
 }
-.speicality-img {
-	position: relative;
-	height: 150px;
-	box-shadow: 2px 2px 13px rgba(0, 0, 0, 0.1);
-	border-radius: 100%;
-	width: 150px;
-	background: #fff;
-}
-.speicality-img img {
-	position: absolute;
-	top: 50%;
-	-ms-transform: translateY(-50%);
-	transform: translateY(-50%);
-	left: 0;
-	right: 0;
-	margin: 0 auto;
-}
-.speicality-img span {
-	-webkit-box-align: center;
-	-ms-flex-align: center;
-	align-items: center;
-	position: absolute;
-    bottom: 10px;
-    right: 10px;
-    box-shadow: 1px 6px 14px rgba(0,0,0,0.2);
-    border-radius: 50%;
-    padding: 5px;
-    background-color: #fff;
-	display: -webkit-inline-box;
-	display: -ms-inline-flexbox;
-	display: inline-flex;
-	justify-content: center;
-	-webkit-justify-content: center;
-	-ms-flex-pack: center;
-}
-.speicality-img span i {
-    font-size: 15px;
-	color:#0de0fe;
-}
-.speicality-item p {
+
+.specialities-lead {
     font-size: 16px;
-    font-weight: 500;
-    margin: 30px 0 0;
+    color: var(--text-muted);
+}
+
+.specialities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 30px;
+    justify-content: center;
+}
+
+.speciality-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.speciality-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 4px 16px rgba(12,122,94,0.1);
+}
+
+.speciality-img-wrap {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.speciality-img-wrap img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.speciality-name {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-main);
 }

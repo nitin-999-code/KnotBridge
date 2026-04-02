@@ -1,261 +1,266 @@
-import React from 'react'
-import AdminLayout from '../AdminLayout/AdminLayout'
-import userImg from '../../../images/john.png';
+import React from 'react';
+import AdminLayout from '../AdminLayout/AdminLayout';
+import { Card, Row, Col, Table, Statistic, Empty, Spin } from 'antd';
+import { FaUserMd, FaUsers, FaCalendarCheck, FaDollarSign, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { useGetDoctorsQuery } from '../../../redux/api/doctorApi';
+import { useGetAllAppointmentsQuery, useGetAllPatientsQuery } from '../../../redux/api/adminApi';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import './Dashboard.css';
+import moment from 'moment';
+
+const COLORS = ['#667eea', '#f093fb', '#fad0c4', '#a8edea', '#fed6e3'];
 
 const AdminDashboard = () => {
-    return (
-        <>
-            <AdminLayout >
-                <div class="row">
-                    <div class="col-xl-3 col-sm-6 col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="dash-widget-header">
-                                    <span class="dash-widget-icon text-primary border-primary">
-                                        <i class="fe fe-users"></i>
-                                    </span>
-                                    <div class="dash-count">
-                                        <h3>168</h3>
-                                    </div>
-                                </div>
-                                <div class="dash-widget-info">
-                                    <h6 class="text-muted">Doctors</h6>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar bg-primary w-50"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-sm-6 col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="dash-widget-header">
-                                    <span class="dash-widget-icon text-success">
-                                        <i class="fe fe-credit-card"></i>
-                                    </span>
-                                    <div class="dash-count">
-                                        <h3>487</h3>
-                                    </div>
-                                </div>
-                                <div class="dash-widget-info">
+    const { data: doctorsData, isLoading: doctorsLoading } = useGetDoctorsQuery({ limit: 100 });
+    const { data: appointmentsData, isLoading: appointmentsLoading } = useGetAllAppointmentsQuery({ limit: 100 });
+    const { data: patientsData, isLoading: patientsLoading } = useGetAllPatientsQuery({ limit: 100 });
 
-                                    <h6 class="text-muted">Patients</h6>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar bg-success w-50"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-sm-6 col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="dash-widget-header">
-                                    <span class="dash-widget-icon text-danger border-danger">
-                                        <i class="fe fe-money"></i>
-                                    </span>
-                                    <div class="dash-count">
-                                        <h3>485</h3>
-                                    </div>
-                                </div>
-                                <div class="dash-widget-info">
+    const doctors = doctorsData?.doctors || [];
+    const appointments = appointmentsData?.appointments || [];
+    const patients = patientsData?.patients || [];
 
-                                    <h6 class="text-muted">Appointment</h6>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar bg-danger w-50"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-sm-6 col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="dash-widget-header">
-                                    <span class="dash-widget-icon text-warning border-warning">
-                                        <i class="fe fe-folder"></i>
-                                    </span>
-                                    <div class="dash-count">
-                                        <h3>$62523</h3>
-                                    </div>
-                                </div>
-                                <div class="dash-widget-info">
+    const totalDoctors = doctorsData?.meta?.total || doctors.length;
+    const totalPatients = patientsData?.meta?.total || patients.length;
+    const totalAppointments = appointmentsData?.meta?.total || appointments.length;
 
-                                    <h6 class="text-muted">Revenue</h6>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar bg-warning w-50"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 col-lg-6">
+    const totalRevenue = appointments.reduce((sum, apt) => {
+        const amount = apt.payment?.[0]?.totalAmount || 0;
+        return sum + amount;
+    }, 0);
 
-                     
-                        <div class="card card-chart">
-                            <div class="card-header">
-                                <h4 class="card-title">Revenue</h4>
-                            </div>
-                            <div class="card-body">
-                                <div id="morrisArea"></div>
-                            </div>
-                        </div>
+    const pendingAppointments = appointments.filter(a => a.status === 'pending').length;
+    const completedAppointments = appointments.filter(a => a.status === 'Completed').length;
 
-                    </div>
-                    <div class="col-md-12 col-lg-6">
+    const last7DaysAppointments = appointments.filter(apt => {
+        const aptDate = moment(apt.createdAt);
+        return aptDate.isAfter(moment().subtract(7, 'days'));
+    }).length;
 
-                     
-                        <div class="card card-chart">
-                            <div class="card-header">
-                                <h4 class="card-title">Status</h4>
-                            </div>
-                            <div class="card-body">
-                                <div id="morrisLine"></div>
-                            </div>
-                        </div>
+    const appointmentsByStatus = [
+        { name: 'Pending', value: pendingAppointments },
+        { name: 'Scheduled', value: appointments.filter(a => a.status === 'scheduled').length },
+        { name: 'Completed', value: completedAppointments },
+        { name: 'Cancelled', value: appointments.filter(a => a.status === 'cancel').length },
+    ].filter(item => item.value > 0);
 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 d-flex">
-                        <div class="card card-table flex-fill">
-                            <div class="card-header">
-                                <h4 class="card-title">Doctors List</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Doctor Name</th>
-                                                <th>Speciality</th>
-                                                <th>Earned</th>
-                                                <th>Reviews</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <h2 class="table-avatar">
-                                                        <a class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src={userImg} alt="User Image"/></a>
-                                                        <a>Dr. Ruby Perrin</a>
-                                                    </h2>
-                                                </td>
-                                                <td>Dental</td>
-                                                <td>$3200.00</td>
-                                                <td>
-                                                    <i class="fe fe-star text-warning"></i>
-                                                    <i class="fe fe-star text-warning"></i>
-                                                    <i class="fe fe-star text-warning"></i>
-                                                    <i class="fe fe-star text-warning"></i>
-                                                    <i class="fe fe-star-o text-secondary"></i>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+        const date = moment().subtract(6 - i, 'days');
+        return {
+            date: date.format('MMM DD'),
+            appointments: appointments.filter(apt => 
+                moment(apt.createdAt).format('YYYY-MM-DD') === date.format('YYYY-MM-DD')
+            ).length
+        };
+    });
 
-                    </div>
-                    <div class="col-md-6 d-flex">
+    const topDoctors = doctors
+        .slice(0, 5)
+        .map(doc => ({
+            ...doc,
+            appointmentCount: appointments.filter(a => a.doctorId === doc.id).length
+        }));
 
-                        <div class="card  card-table flex-fill">
-                            <div class="card-header">
-                                <h4 class="card-title">Patients List</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Patient Name</th>
-                                                <th>Phone</th>
-                                                <th>Last Visit</th>
-                                                <th>Paid</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <h2 class="table-avatar">
-                                                        <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src={userImg} alt="User Image"/></a>
-                                                        <a href="profile.html">Charlene Reed </a>
-                                                    </h2>
-                                                </td>
-                                                <td>8286329170</td>
-                                                <td>20 Oct 2019</td>
-                                                <td class="text-right">$100.00</td>
-                                            </tr>
-                                           
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+    const recentAppointments = appointments
+        .slice(0, 5)
+        .map(apt => ({
+            ...apt,
+            doctor: doctors.find(d => d.doctorId === apt.doctorId),
+            patient: patients.find(p => p.id === apt.patientId)
+        }));
 
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
+    const statsCards = [
+        {
+            title: 'Total Doctors',
+            value: totalDoctors,
+            icon: <FaUserMd />,
+            color: 'primary',
+            trend: { value: 12, isUp: true },
+        },
+        {
+            title: 'Total Patients',
+            value: totalPatients,
+            icon: <FaUsers />,
+            color: 'success',
+            trend: { value: 8, isUp: true },
+        },
+        {
+            title: 'Appointments',
+            value: totalAppointments,
+            icon: <FaCalendarCheck />,
+            color: 'warning',
+            trend: { value: 3, isUp: false },
+        },
+        {
+            title: 'Revenue',
+            value: `$${totalRevenue.toFixed(0)}`,
+            icon: <FaDollarSign />,
+            color: 'info',
+            trend: { value: 15, isUp: true },
+        },
+    ];
 
-                        <div class="card card-table">
-                            <div class="card-header">
-                                <h4 class="card-title">Appointment List</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>Doctor Name</th>
-                                                <th>Speciality</th>
-                                                <th>Patient Name</th>
-                                                <th>Apointment Time</th>
-                                                <th>Status</th>
-                                                <th class="text-right">Amount</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <h2 class="table-avatar">
-                                                        <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src={userImg} alt="User Image"/></a>
-                                                        <a href="profile.html">Dr. Ruby Perrin</a>
-                                                    </h2>
-                                                </td>
-                                                <td>Dental</td>
-                                                <td>
-                                                    <h2 class="table-avatar">
-                                                        <a href="profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src={userImg} alt="User Image"/></a>
-                                                        <a href="profile.html">Charlene Reed </a>
-                                                    </h2>
-                                                </td>
-                                                <td>9 Nov 2019 <span class="text-primary d-block">11.00 AM - 11.15 AM</span></td>
-                                                <td>
-                                                    <div class="status-toggle">
-                                                        <input type="checkbox" id="status_1" class="check" checked/>
-                                                            <label for="status_1" class="checktoggle">checkbox</label>
-                                                    </div>
-                                                </td>
-                                                <td class="text-right">
-                                                    $200.00
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+    const doctorColumns = [
+        {
+            title: 'Doctor',
+            dataIndex: 'firstName',
+            key: 'name',
+            render: (text, record) => `Dr. ${text} ${record.lastName}`,
+        },
+        {
+            title: 'Specialty',
+            dataIndex: 'specialization',
+            key: 'specialty',
+        },
+        {
+            title: 'Appointments',
+            dataIndex: 'appointmentCount',
+            key: 'appointments',
+        },
+    ];
 
-                    </div>
+    const appointmentColumns = [
+        {
+            title: 'Patient',
+            dataIndex: 'firstName',
+            key: 'patient',
+            render: (text, record) => `${text || 'N/A'} ${record.lastName || ''}`,
+        },
+        {
+            title: 'Doctor',
+            dataIndex: 'doctor',
+            key: 'doctor',
+            render: (doctor) => doctor ? `Dr. ${doctor.firstName} ${doctor.lastName}` : 'N/A',
+        },
+        {
+            title: 'Date',
+            dataIndex: 'scheduleDate',
+            key: 'date',
+            render: (date) => moment(date).format('MMM DD, YYYY'),
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => (
+                <span className={`status-badge status-badge--${status?.toLowerCase()}`}>
+                    {status}
+                </span>
+            ),
+        },
+    ];
+
+    if (doctorsLoading || appointmentsLoading || patientsLoading) {
+        return (
+            <AdminLayout title="Admin Dashboard" breadcrumbs={['Admin', 'Dashboard']}>
+                <div className="dashboard-loading">
+                    <Spin size="large" />
                 </div>
             </AdminLayout>
-        </>
-    )
-}
+        );
+    }
+
+    return (
+        <AdminLayout title="Welcome Admin!" breadcrumbs={['Admin', 'Dashboard']}>
+            <div className="admin-dashboard">
+                <Row gutter={[16, 16]}>
+                    {statsCards.map((stat, index) => (
+                        <Col key={index} xs={24} sm={12} lg={6}>
+                            <div className={`stats-card stats-card--${stat.color}`}>
+                                <div className="stats-card-icon">{stat.icon}</div>
+                                <div className="stats-card-value">{stat.value}</div>
+                                <div className="stats-card-label">{stat.title}</div>
+                                {stat.trend && (
+                                    <div className="stats-card-trend">
+                                        {stat.trend.isUp ? <FaArrowUp /> : <FaArrowDown />}
+                                        {stat.trend.value}% vs last month
+                                    </div>
+                                )}
+                            </div>
+                        </Col>
+                    ))}
+                </Row>
+
+                <Row gutter={[16, 16]} className="mt-4">
+                    <Col xs={24} lg={16}>
+                        <Card className="admin-card" title="Appointments Trend (Last 7 Days)">
+                            <ResponsiveContainer width="100%" height={300}>
+                                <LineChart data={last7Days}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="date" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Line type="monotone" dataKey="appointments" stroke="#667eea" strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </Card>
+                    </Col>
+
+                    <Col xs={24} lg={8}>
+                        <Card className="admin-card" title="Appointment Status">
+                            {appointmentsByStatus.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <PieChart>
+                                        <Pie
+                                            data={appointmentsByStatus}
+                                            cx="50%"
+                                            cy="50%"
+                                            labelLine={false}
+                                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                            outerRadius={80}
+                                            fill="#8884d8"
+                                            dataKey="value"
+                                        >
+                                            {appointmentsByStatus.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <Empty description="No appointment data" />
+                            )}
+                        </Card>
+                    </Col>
+                </Row>
+
+                <Row gutter={[16, 16]} className="mt-4">
+                    <Col xs={24} lg={12}>
+                        <Card className="admin-card" title="Top Doctors">
+                            {topDoctors.length > 0 ? (
+                                <Table
+                                    columns={doctorColumns}
+                                    dataSource={topDoctors}
+                                    pagination={false}
+                                    rowKey="id"
+                                    size="small"
+                                />
+                            ) : (
+                                <Empty description="No doctor data" />
+                            )}
+                        </Card>
+                    </Col>
+
+                    <Col xs={24} lg={12}>
+                        <Card className="admin-card" title="Recent Appointments">
+                            {recentAppointments.length > 0 ? (
+                                <Table
+                                    columns={appointmentColumns}
+                                    dataSource={recentAppointments}
+                                    pagination={false}
+                                    rowKey="id"
+                                    size="small"
+                                />
+                            ) : (
+                                <Empty description="No appointment data" />
+                            )}
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+        </AdminLayout>
+    );
+};
+
 export default AdminDashboard;

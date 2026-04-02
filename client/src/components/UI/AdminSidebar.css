@@ -1,185 +1,159 @@
+/* Modern Admin Sidebar Styles */
 .sidebar {
-    background-color: #1b5a90;
-   /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
-    bottom: 0;
-    left: 0;
-    margin-top: 0;
-    position: fixed;
-    top: 60px;	
-    transition: all 0.2s ease-in-out 0s;
-    width: 240px;
-    z-index: 1001;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  margin-top: 40px;
+  padding-bottom: 50px;
 }
-.sidebar.opened {
-	-webkit-transition: all 0.4s ease;
-	-moz-transition: all 0.4s ease;
-	transition: all 0.4s ease;
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
 }
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
 .sidebar-inner {
-	height: 100%;
-	min-height: 100%;
-	transition: all 0.2s ease-in-out 0s;
+  padding: 1rem 0;
 }
-.sidebar-menu {
-    padding: 15px;
+
+.sidebar-logo {
+  padding: 1.5rem 1.5rem 1rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
 }
+
+.sidebar-logo h2 {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.sidebar-logo p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.75rem;
+  margin: 0.25rem 0 0;
+}
+
 .sidebar-menu ul {
-	font-size: 15px;
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	position: relative;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
+
+.sidebar-menu .menu-title {
+  padding: 1rem 1.5rem 0.5rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-menu li {
+  margin: 0.25rem 0;
+}
+
 .sidebar-menu li a {
-	text-decoration: none;
-	color: #fff;
-	display: block;
-	font-size: 16px;
-	height: auto;
-	padding: 0 20px;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-left: 3px solid transparent;
 }
+
+.sidebar-menu li a svg {
+  margin-right: 0.75rem;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
 .sidebar-menu li a:hover {
-    color: #5ae8ff;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-left-color: #60a5fa;
 }
-.sidebar-menu > ul > li > a:hover {
-	background-color: #19c1dc;
-    color: #fff;
-}
-.sidebar-menu > ul > li.active > a:hover {
-    background-color: #19c1dc;
-    color: #fff;
-}
+
 .sidebar-menu li.active a {
-    background-color: #00d0f1;
-    color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-left-color: #fff;
+  font-weight: 600;
 }
-.menu-title {
-    color: #ebebeb;
+
+@media (max-width: 991px) {
+  .sidebar {
+    left: -260px;
+  }
+  
+  .sidebar.sidebar-open {
+    left: 0;
+  }
+}
+
+.sidebar-toggle-mobile {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1001;
+  background: #1e3a8a;
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s;
+}
+
+.sidebar-toggle-mobile:hover {
+  background: #1e40af;
+  transform: scale(1.05);
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+@media (max-width: 991px) {
+  .sidebar-toggle-mobile {
     display: flex;
-    font-size: 14px;
-    opacity: 1;
-    padding: 5px 15px;
-    white-space: nowrap;
-}
-.menu-title > i {
-	float: right;
-	line-height: 40px;
-}
-.sidebar-menu li.menu-title a {
-    color: #ff9b44;
-    display: inline-block;
-    margin-left: auto;
-    padding: 0;
-}
-.sidebar-menu li.menu-title a.btn {
-    color: #fff;
-    display: block;
-    float: none;
-    font-size: 15px;
-    margin-bottom: 15px;
-    padding: 10px 15px;
-}
-.sidebar-menu ul ul a.active {
-	color: #20e3ff;
-	text-decoration: underline;
-}
-.mobile_btn {
-	display: none;
-	float: left;
-}
-.sidebar .sidebar-menu > ul > li > a span {
-	transition: all 0.2s ease-in-out 0s;
-	display: inline-block;
-	margin-left: 10px;
-	white-space: nowrap;
-}
-.sidebar .sidebar-menu > ul > li > a span.chat-user {
-    margin-left: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.sidebar .sidebar-menu > ul > li > a span.badge {
-	margin-left: auto;
-}
-.sidebar-menu ul ul a {
-    display: block;
-    font-size: 15px;
-    padding: 7px 10px 7px 45px;
-    position: relative;
-}
-.sidebar-menu ul ul {
-	display: none;
-}
-.sidebar-menu ul ul ul a {
-	padding-left: 65px;
-}
-.sidebar-menu ul ul ul ul a {
-	padding-left: 85px;
-}
-.sidebar-menu > ul > li {
-    margin-bottom: 3px;
-    position: relative;
-}
-.sidebar-menu > ul > li:last-child {
-    margin-bottom: 0;
-}
-.sidebar-menu .menu-arrow {
-	-webkit-transition: -webkit-transform 0.15s;
-	-o-transition: -o-transform 0.15s;
-	transition: transform .15s;
-	position: absolute;
-	right: 15px;
-	display: inline-block;
-	font-family: 'FontAwesome';
-	text-rendering: auto;
-	line-height: 40px;
-	font-size: 16px;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-transform: translate(0, 0);
-	-ms-transform: translate(0, 0);
-	-o-transform: translate(0, 0);
-	transform: translate(0, 0);
-	line-height: 18px;
-	top: 11px;
-}
-.sidebar-menu .menu-arrow:before {
-	content: "\f105";
-}
-.sidebar-menu li a.subdrop .menu-arrow {
-	-ms-transform: rotate(90deg);
-	-webkit-transform: rotate(90deg);
-	-o-transform: rotate(90deg);
-	transform: rotate(90deg);
-}
-.sidebar-menu ul ul a .menu-arrow {
-	top: 10px;
-}
-.sidebar-menu > ul > li > a {
     align-items: center;
-    border-radius: 3px;
-    display: flex;
-    justify-content: flex-start;
-    padding: 8px 15px;
-    position: relative;
-    transition: all 0.2s ease-in-out 0s;
-	color: #f1f1f1;
+    justify-content: center;
+  }
+  
+  .sidebar-overlay {
+    display: block;
+  }
 }
-.sidebar-menu ul li a i {
-	display: inline-block;
-	font-size: 24px;
-	line-height: 24px;
-	text-align: left;
-	vertical-align: middle;
-	width: 20px;
-	transition: all 0.2s ease-in-out 0s;
-}
-.sidebar-menu ul li.menu-title a i {
-	font-size: 16px !important;
-	margin-right: 0;
-	text-align: right;
-	width: auto;
-}
-.sidebar-menu li a > .badge {
-    color: #fff;
-}
+

@@ -1,45 +1,27 @@
 import React from 'react';
 import img from '../../../images/features/feature.png';
-import img2 from '../../../images/features/feature-02.jpg';
-import img3 from '../../../images/features/feature-02.jpg';
-import img4 from '../../../images/features/feature-03.jpg';
 import './index.css';
+import AvailableServiceContent from './AvailableServiceContent';
 
-const Availabe = () => {
+const Available = () => {
 	return (
-		<section className="section section-features">
-			<div className="container-fluid">
-				<div className="row">
-					<div className="col-md-5 features-img">
-						<img src={img} className="img-fluid" alt="Feature" />
+		<section className="available-section">
+			<div className="container">
+				<div className="row align-items-center g-4 g-lg-5">
+					<div className="col-lg-5">
+						<div className="available-section__visual">
+							<img src={img} className="img-fluid" alt="Clinic facilities" />
+						</div>
 					</div>
-					<div className="col-md-7">
-						<div className="section-header">
-							<h2 className="mt-2">Availabe Features in Our Clinic</h2>
-							<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </p>
+					<div className="col-lg-7">
+						<div className="available-section__header text-center text-lg-start">
+							<span className="available-section__label">Facilities</span>
+							<h2>Available services</h2>
+							<p className="available-section__lead">
+								Modern facilities and dedicated spaces for your care.
+							</p>
 						</div>
-						<div className="features-slider slider d-flex justify-content-center align-items-center gap-4">
-
-							<div className="feature-item text-center">
-								<img src={img4} className="img-fluid" alt="Feature" />
-								<p>ICU</p>
-							</div>
-
-							<div class="feature-item text-center">
-								<img src={img4} className="img-fluid" alt="Feature" />
-								<p>Patient Ward</p>
-							</div>
-
-							<div className="feature-item text-center">
-								<img src={img2} className="img-fluid" alt="Feature" />
-								<p>Test Room</p>
-							</div>
-
-							<div className="feature-item text-center">
-								<img src={img3} className="img-fluid" alt="Feature" />
-								<p>Laboratory</p>
-							</div>
-						</div>
+						<AvailableServiceContent />
 					</div>
 				</div>
 			</div>
@@ -47,4 +29,4 @@ const Availabe = () => {
 	);
 };
 
-export default Availabe;
+export default Available;

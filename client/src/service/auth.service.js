@@ -1,7 +1,6 @@
-import { authKey } from "@/constants/storageKey"
-import { decodeToken } from "@/utils/jwt";
-import { getFromLocalStorage, setLocalStorage } from "@/utils/local-storage"
-
+import {authKey} from '../constant/storageKey';
+import {decodeToken} from '../utils/jwt';
+import { getFromLocalStorage, setLocalStorage } from '../utils/local-storage';
 export const setUserInfo = ({ accessToken }) => {
     return setLocalStorage(authKey, accessToken);
 }
@@ -19,6 +18,6 @@ export const isLoggedIn = () => {
     const authToken = getFromLocalStorage(authKey);
     return !!authToken;
 }
-export const loggedOut = (key) => {
-    return localStorage.removeItem(key)
+export const loggedOut = () => {
+    return localStorage.removeItem(authKey)
 }

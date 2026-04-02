@@ -1,23 +1,25 @@
 export const tagTypes = {
-    user: 'user',
-    serviceRequest: 'service-request',
-    appointment: 'apppointment',
-    customers: 'customers',
-    review: 'review',
-    userReview: 'user-review',
-    blog: 'blog',
-    service: 'service',
-    order: 'order',
+    favourite: 'favourite',
+    prescription: 'prescription',
+    patient: 'patient',
+    appointments: 'appointments',
+    doctor: 'doctor',
+    reviews: 'reviews',
+    timeSlot: 'timeSlot',
+    blogs: 'blogs',
+    medicine: 'medicine',
+    admin: 'admin'
 }
 
 export const tagTypeList = [
-    tagTypes.user,
-    tagTypes.serviceRequest,
-    tagTypes.appointment,
-    tagTypes.customers,
-    tagTypes.review,
-    tagTypes.userReview,
-    tagTypes.blog,
-    tagTypes.order,
-    tagTypes.service,
+    tagTypes.favourite,
+    tagTypes.prescription,
+    tagTypes.patient,
+    tagTypes.appointments,
+    tagTypes.doctor,
+    tagTypes.reviews,
+    tagTypes.timeSlot,
+    tagTypes.blogs,
+    tagTypes.medicine,
+    tagTypes.admin
 ]

@@ -1,83 +1,61 @@
-.dash-widget-icon {
-    align-items: center;
-    display: inline-flex;
-    font-size: 1.875rem;
-    height: 50px;
-    justify-content: center;
-    line-height: 48px;
-    text-align: center;
-    width: 50px;
-	border: 3px solid;
-    border-radius: 50px;
-    padding: 28px;
+.doctor-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
-.avatar-img{
-    height: 20px;
-    width: 20px;
-    object-fit: cover;
+
+.doctor-avatar {
+  flex-shrink: 0;
 }
-.table-avatar a{
-    font-size: 14px;
-    text-decoration: none;
-    color: inherit;
+
+.doctor-details {
+  flex: 1;
+  min-width: 0;
 }
-.dash-count {
-    font-size: 18px;
-    margin-left: auto;
+
+.doctor-name {
+  font-weight: 600;
+  color: #2c4964;
+  margin-bottom: 0.25rem;
 }
-.dash-widget-info h3 {
-    margin-bottom: 10px;
+
+.doctor-designation {
+  font-size: 0.85rem;
+  color: #6c757d;
 }
-.dash-widget-header {
-    align-items: center;
-    display: flex;
-    margin-bottom: 15px;
+
+.doctor-form-image-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
 }
-.card-chart .card-body {
-	padding: 8px;
+
+.image-preview-container {
+  display: flex;
+  justify-content: center;
 }
-#morrisArea > svg, #morrisLine > svg  {
-	width: 100%;
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
 }
-.activity-feed {
-    list-style: none;
-    margin-bottom: 0;
-    margin-left: 5px;
-    padding: 0;
+
+.text-muted {
+  color: #6c757d;
 }
-.activity-feed .feed-item {
-    border-left: 2px solid #e4e8eb;
-    padding-bottom: 19px;
-    padding-left: 20px;
-    position: relative;
+
+.small {
+  font-size: 0.875rem;
 }
-.activity-feed .feed-item:last-child {
-	border-color: transparent;
-	padding-bottom: 0;
-}
-.activity-feed .feed-item:after {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: -7px;
-	width: 12px;
-	height: 12px;
-	border-radius: 50%;
-	background-color: #177dff;
-}
-.activity-feed .feed-item .feed-date {
-	display: block;
-	position: relative;
-	color: #777;
-	text-transform: uppercase;
-	font-size: 13px;
- }
-.activity-feed .feed-item .feed-text {
-	color: #777;
-	position: relative;
-}
-.activity-feed .feed-item .feed-text a {
-    color: #333;
-    font-weight: 600;
+
+.ms-2 {
+  margin-left: 0.5rem;
 }

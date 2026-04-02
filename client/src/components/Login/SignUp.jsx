@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FaCheck, FaEnvelope, FaLock, FaTimes, FaUser } from 'react-icons/fa';
-import SocialSignUp from './SocialSignUp';
-import Spinner from 'react-bootstrap/Spinner'
+import Spinner from 'react-bootstrap/Spinner';
 import swal from 'sweetalert';
 import { useDoctorSignUpMutation, usePatientSignUpMutation } from '../../redux/api/authApi';
-
-// password regex
-// ^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$
-// At least one upper case English letter, (?=.*?[A-Z])
-// At least one lower case English letter, (?=.*?[a-z])
-// At least one digit, (?=.*?[0-9])
-// At least one special character, (?=.*?[#?!@$%^&*-])
-// Minimum eight in length .{8,} (with the anchors)
+import { message } from 'antd';
 
 const SignUp = ({ setSignUp }) => {
     const [error, setError] = useState({});
@@ -22,59 +14,37 @@ const SignUp = ({ setSignUp }) => {
         lastName: '',
         email: '',
         password: '',
-    }
-    const [user, setUser] = useState(formField)
+    };
+    const [user, setUser] = useState(formField);
     const [userType, setUserType] = useState('patient');
-    const [doctorSignUp, { data: dData, isSuccess: dIsSuccess, isError: dIsError, error: dError, isLoading: dIsLoading }] = useDoctorSignUpMutation();
-    const [patientSignUp, { data: pData, isSuccess: pIsSuccess, isError: pIsError, error: pError, isLoading: pIsLoading }] = usePatientSignUpMutation();
+    
+    // We omit error and data params to keep compiler silent if unused, but we need them:
+    const [doctorSignUp, { isSuccess: dIsSuccess, isError: dIsError, error: dError, isLoading: dIsLoading }] = useDoctorSignUpMutation();
+    const [patientSignUp, { isSuccess: pIsSuccess, isError: pIsError, error: pError, isLoading: pIsLoading }] = usePatientSignUpMutation();
+    
     const [passwordValidation, setPasswordValidation] = useState({
         carLength: false,
         specailChar: false,
         upperLowerCase: false,
         numeric: false
-    })
+    });
+    const [emailError, setEmailError] = useState({
+        emailError: false
+    });
 
     const handleSignUpSuccess = () => {
         setLoading(false);
-        setUser(formField)
-        setSignUp(false)
-        swal({
-            icon: 'success',
-            text: `Successfully ${userType === 'doctor' ? 'Doctor' : 'Patient'} Account Created Please Login`,
-            timer: 2000
-        })
-    }
-    useEffect(() => {
-        // doctor account
-        if (dIsError && dError) {
-            setLoading(false)
-            setInfoError(dError.data.message)
-        }
-        if (!dIsError && dIsSuccess) {
-            handleSignUpSuccess();
-        }
-        // Patient account
-        if (pIsError && pError) {
-            setLoading(false)
-            setInfoError(pError.data.message)
-        }
-        if (!pIsError && pIsSuccess) {
-            handleSignUpSuccess();
-        }
-
-    }, [dIsError, dError, pError, pIsError, , pIsLoading, dIsLoading, pData, dData, setSignUp, setLoading])
-
-    const [emailError, setEmailError] = useState({
-        emailError: false
-    })
+        setUser(formField);
+    };
 
     const handleEmailError = (name, value) => {
         if (name === 'email') {
             setEmailError({
                 emailError: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-            })
+            });
         }
-    }
+    };
+
     const hanldeValidation = (name, value) => {
         if (name === 'password') {
             setPasswordValidation({
@@ -82,119 +52,136 @@ const SignUp = ({ setSignUp }) => {
                 specailChar: /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(value),
                 upperLowerCase: /^(?=.*[a-z])(?=.*[A-Z])/.test(value),
                 numeric: /^(?=.*\d)/.test(value),
-            })
+            });
         }
-    }
+    };
 
     const hanldeOnChange = (e) => {
         let { name, value } = e.target;
-        hanldeValidation(name, value)
-        handleEmailError(name, value)
+        hanldeValidation(name, value);
+        handleEmailError(name, value);
         let isPassValid = true;
 
-        if (value === 'email') {
+        if (name === 'email') {
             isPassValid = /\S+@\S+\.\S+/.test(value);
         }
-        if (value === 'password') {
+        if (name === 'password') {
             isPassValid = ((value.length > 8)
                 && /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/.test(value)
                 && /^(?=.*[a-z])(?=.*[A-Z])/.test(value)
-                && /^(?=.*\d)/.test(value))
+                && /^(?=.*\d)/.test(value));
         }
-        if (isPassValid) {
+        if (isPassValid || !isPassValid) {
             const newPass = { ...user };
-            newPass[name] = value
-            setUser(newPass)
+            newPass[name] = value;
+            setUser(newPass);
         }
-    }
+    };
 
     const handleUserTypeChange = (e) => {
         setUserType(e.target.value);
-    }
+    };
+
     const hanldeOnSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        if (userType === "doctor") {
-            doctorSignUp(user);
-        } else {
-            patientSignUp(user)
+        try {
+            if (userType === "doctor") {
+                await doctorSignUp(user).unwrap();
+                swal({
+                    icon: 'success',
+                    text: `Successfully Account Created Please Verify Your email`,
+                    timer: 5000
+                });
+                handleSignUpSuccess();
+            } else {
+                await patientSignUp(user).unwrap();
+                swal({
+                    icon: 'success',
+                    text: `Successfully ${userType === 'doctor' ? 'Doctor' : 'Patient'} Account Created Please Login`,
+                    timer: 2000
+                });
+                handleSignUpSuccess();
+                setSignUp(false);
+            }
+        } catch (error) {
+            const errorMessage = error?.data?.message || "Registration failed. Please try again.";
+            message.error(errorMessage);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     return (
-        <form className="sign-up-form" onSubmit={hanldeOnSubmit}>
-            <h2 className="title">Sign Up</h2>
-            <div className="input-field">
-                <span className="fIcon"><FaUser /></span>
-                <input placeholder="Name" name="firstName" type="text" onChange={(e) => hanldeOnChange(e)} value={user.firstName} />
-            </div>
-            <div className="input-field">
-                <span className="fIcon"><FaUser /></span>
-                <input placeholder="Name" name="lastName" type="text" onChange={(e) => hanldeOnChange(e)} value={user.lastName} />
-            </div>
-            <div className="input-field">
-                <span className="fIcon"><FaEnvelope /></span>
-                <input placeholder="Email" name="email" type="email" onChange={(e) => hanldeOnChange(e)} value={user.email} />
-            </div>
-            <div className="input-field">
-                <span className="fIcon"><FaLock /></span>
-                <input type="password" name="password" placeholder="password" onChange={(e) => hanldeOnChange(e)} value={user.password} />
-            </div>
-            <div className='input-field d-flex align-items-center gap-2 justify-content-center'>
-                <div className='text-nowrap'>I'M A</div>
-                <select
-                    className="form-select w-50"
-                    aria-label="select"
-                    onChange={(e) => handleUserTypeChange(e)}
-                    defaultValue='patient'
+        <div className="auth-form-container">
+            <h2 className="auth-title">Create Account</h2>
+            <p className="auth-subtitle mb-4">Join MediBook and book doctors instantly.</p>
+            
+            <form className="auth-form" onSubmit={hanldeOnSubmit}>
+                <div className="auth-input-group mb-3">
+                    <span className="auth-input-icon"><FaUser /></span>
+                    <input placeholder="First Name" name="firstName" type="text" className="auth-input" onChange={hanldeOnChange} value={user.firstName} required />
+                </div>
+                
+                <div className="auth-input-group mb-3">
+                    <span className="auth-input-icon"><FaUser /></span>
+                    <input placeholder="Last Name" name="lastName" type="text" className="auth-input" onChange={hanldeOnChange} value={user.lastName} required />
+                </div>
+                
+                <div className="auth-input-group mb-3">
+                    <span className="auth-input-icon"><FaEnvelope /></span>
+                    <input placeholder="Email" name="email" type="email" className="auth-input" onChange={hanldeOnChange} value={user.email} required />
+                </div>
+                
+                <div className="auth-input-group mb-3">
+                    <span className="auth-input-icon"><FaLock /></span>
+                    <input type="password" name="password" placeholder="Password" className="auth-input" onChange={hanldeOnChange} value={user.password} required />
+                </div>
+                
+                <div className="auth-input-group mb-3 d-flex align-items-center">
+                    <span className="auth-input-icon">Role</span>
+                    <select
+                        className="auth-input border-0"
+                        style={{ outline: "none" }}
+                        onChange={handleUserTypeChange}
+                        defaultValue='patient'
+                    >
+                        <option value="patient">Patient</option>
+                        <option value="doctor">Doctor</option>
+                    </select>
+                </div>
+
+                {Object.keys(error).length > 0 && <h6 className="text-danger small">{JSON.stringify(error)}</h6>}
+                {infoError && <h6 className="text-danger small">{infoError}</h6>}
+                
+                <div className="password-validatity p-2 mb-3 bg-light rounded small">
+                    <div className={emailError.emailError ? "text-success" : "text-danger"}>
+                        {emailError.emailError ? <FaCheck /> : <FaTimes />} <span className="ms-1">Valid Email</span>
+                    </div>
+                    <div className={passwordValidation.carLength ? "text-success" : "text-danger"}>
+                        {passwordValidation.carLength ? <FaCheck /> : <FaTimes />} <span className="ms-1">At least 8 chars</span>
+                    </div>
+                    <div className={passwordValidation.specailChar ? "text-success" : "text-danger"}>
+                        {passwordValidation.specailChar ? <FaCheck /> : <FaTimes />} <span className="ms-1">Special char</span>
+                    </div>
+                    <div className={passwordValidation.upperLowerCase ? "text-success" : "text-danger"}>
+                        {passwordValidation.upperLowerCase ? <FaCheck /> : <FaTimes />} <span className="ms-1">Upper & Lower case</span>
+                    </div>
+                    <div className={passwordValidation.numeric ? "text-success" : "text-danger"}>
+                        {passwordValidation.numeric ? <FaCheck /> : <FaTimes />} <span className="ms-1">Number</span>
+                    </div>
+                </div>
+
+                <button type="submit" 
+                    className="auth-btn-primary w-100 mb-3"
+                    disabled={
+                        !(passwordValidation.carLength && passwordValidation.numeric && passwordValidation.upperLowerCase && passwordValidation.specailChar && emailError.emailError) || loading
+                    }
                 >
-                    <option value="patient">Patient</option>
-                    <option value="doctor">Doctor</option>
-                </select>
-            </div>
-            {error.length && <h6 className="text-danger text-center">{error}</h6>}
-            {infoError && <h6 className="text-danger text-center">{infoError}</h6>}
-            <button type="submit"
-                className="btn btn-primary btn-block mt-2 iBtn"
-                disabled={
-                    passwordValidation.carLength && passwordValidation.numeric && passwordValidation.upperLowerCase && passwordValidation.specailChar && emailError.emailError ? "" : true
-                }
-            >
-                {loading ? <Spinner animation="border" variant="info" /> : "Sign Up"}
-            </button>
-
-            <div className="password-validatity mx-auto">
-
-                <div style={emailError.emailError ? { color: "green" } : { color: "red" }}>
-                    <p>{passwordValidation.numeric ? <FaCheck /> : <FaTimes />}
-                        <span className="ms-2">Must Have Valid Email.</span></p>
-                </div>
-
-                <div style={passwordValidation.carLength ? { color: "green" } : { color: "red" }}>
-                    <p>{passwordValidation.numeric ? <FaCheck /> : <FaTimes />}
-                        <span className="ms-2">Password Must Have atlast 8 character.</span></p>
-                </div>
-
-                <div style={passwordValidation.specailChar ? { color: "green" } : { color: "red" }}>
-                    <p>{passwordValidation.numeric ? <FaCheck /> : <FaTimes />}
-                        <span className="ms-2">Password Must Have a special cracter.</span></p>
-                </div>
-
-                <div style={passwordValidation.upperLowerCase ? { color: "green" } : { color: "red" }}>
-                    <p>{passwordValidation.numeric ? <FaCheck /> : <FaTimes />}
-                        <span className="ms-2">Password Must Have uppercase and lower case.</span></p>
-                </div>
-
-                <div style={passwordValidation.numeric ? { color: "green" } : { color: "red" }}>
-                    <p>{passwordValidation.numeric ? <FaCheck /> : <FaTimes />}
-                        <span className="ms-2">Password Must Have Number.</span></p>
-                </div>
-            </div>
-
-            <p className="social-text">Or Sign up with social account</p>
-            <SocialSignUp />
-        </form>
-
+                    {loading || pIsLoading || dIsLoading ? <Spinner size="sm" animation="border" /> : "Sign Up"}
+                </button>
+            </form>
+        </div>
     );
 };
 

@@ -1,0 +1,90 @@
+.search-doctor-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+}
+
+.search-doctor-hero {
+    background: var(--white);
+    padding: 140px 0 60px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 50px;
+}
+
+.search-doctor-hero h1 {
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 15px;
+}
+
+.search-doctor-hero p {
+    font-size: 16px;
+    color: var(--text-muted);
+}
+
+.specialty-pills-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.specialty-pill {
+    background: var(--white);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.specialty-pill:hover,
+.specialty-pill.active {
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* Sidebar overriding */
+.search-sidebar {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 24px;
+    position: sticky;
+    top: 90px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+}
+
+.search-sidebar h5 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 16px;
+}
+
+.search-sidebar .form-check-label {
+    font-size: 14px;
+    color: var(--text-main);
+}
+
+.search-sidebar .btn-search {
+    background: var(--primary);
+    color: var(--white);
+    width: 100%;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.search-sidebar .btn-search:hover {
+    background: var(--primary-light);
+}
+
+.search-doctor-empty h2 {
+    font-size: 20px;
+    color: var(--text-muted);
+}

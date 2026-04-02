@@ -1,51 +1,33 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700,900');
-
-*{
+* {
+  font-family: 'Inter', sans-serif;
   box-sizing: border-box;
-  margin:0;
+  margin: 0;
   padding: 0;
 }
-body{
-  overflow-x:hidden ;
-  font-family: 'Poppins', sans-serif;
-  height: 100%;
-  color: #272b41;
-  background-color: #f8f9fa;
+:root {
+  --primary: #0C7A5E;
+  --primary-light: #07B07A;
+  --primary-bg: #F0FBF7;
+  --dark: #0D2B24;
+  --text-main: #1a1a2e;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --white: #ffffff;
+  --shadow: 0 2px 16px rgba(12,122,94,0.08);
 }
-
-h1, h2, h3, h4, h5, h6 {
-	color: #272b41;
-	font-weight: 500;
+body {
+  background: #ffffff;
+  color: var(--text-main);
 }
-.h1, h1 {
-    font-size: 2.25rem;
+a { color: var(--primary); text-decoration: none; }
+a:hover { color: var(--primary-light); }
+.ant-btn-primary {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
 }
-.h2, h2 {
-    font-size: 1.875rem;
-}
-.h3, h3 {
-    font-size: 1.5rem;
-}
-.h4, h4 {
-    font-size: 1.125rem;
-}
-.h5, h5 {
-    font-size: 1rem;
-}
-.h6, h6 {
-    font-size: 0.875rem;
-}
-
-a {
-    color: #2E3842;
-    text-decoration: none;
-}
-a:hover {
-	color: #09dca4;
-}
-a:hover,
-a:active,
-a:focus {
-	outline: none;
-	text-decoration: none;
+.ant-btn-primary:hover {
+  background: var(--primary-light) !important;
+  border-color: var(--primary-light) !important;
 }
