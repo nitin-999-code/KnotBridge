@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
-import { FaHeartbeat } from 'react-icons/fa';
+import logo from '../../images/logo.png';
 import './SignInForm.css';
 
 const SignInForm = () => {
@@ -12,7 +12,7 @@ const SignInForm = () => {
             <div className="auth-card">
                 <div className="auth-header text-center">
                     <Link to="/" className="auth-logo">
-                        <FaHeartbeat className="auth-logo-icon" /> <span>MediBook</span>
+                        <img src={logo} alt="MediBook Logo" className="auth-logo-img" />
                     </Link>
                 </div>
                 
