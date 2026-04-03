@@ -53,129 +53,122 @@ const Reviews = () => {
         },
     ];
 
-    if (isLoading) {
-        return (
-            <DashboardLayout>
-                <div className="p-4">
-                    <SkeletonList count={3} />
-                </div>
-            </DashboardLayout>
-        );
-    }
-
-    if (!data || data.length === 0) {
-        return (
-            <DashboardLayout>
-                <Card>
-                    <EmptyState type="generic" title="No available data right now" />
-                </Card>
-            </DashboardLayout>
-        );
-    }
+    // CRITICAL: Never return early. Compute fallback first, then render.
+    const hasData = data && data.length > 0;
 
     return (
         <DashboardLayout>
-            <div className="dashboard-card">
-                <div className="dashboard-card-header">
-                    <h3 className="dashboard-card-title">Patient Reviews</h3>
+            {isLoading ? (
+                <div className="p-4">
+                    <SkeletonList count={3} />
                 </div>
-
-                <div className="stats-mini-grid mb-4">
-                    {stats.map((stat, index) => (
-                        <Card key={index} className={`stat-mini-card stat-mini-card-${stat.color}`}>
-                            <div className="stat-mini-details">
-                                <div className="stat-mini-title">{stat.title}</div>
-                                <div className="stat-mini-count">
-                                    {stat.icon && <span className="me-2">{stat.icon}</span>}
-                                    {stat.count}
-                                </div>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
-
-                <Card className="mb-4">
-                    <h5 className="mb-3">Rating Distribution</h5>
-                    {ratingDistribution.map(item => (
-                        <div key={item.star} className="rating-bar-container mb-2">
-                            <span className="rating-star">{item.star} <FaStar className="text-warning" /></span>
-                            <div className="rating-bar">
-                                <div 
-                                    className="rating-bar-fill" 
-                                    style={{ width: `${item.percentage}%` }}
-                                />
-                            </div>
-                            <span className="rating-count">{item.count}</span>
-                        </div>
-                    ))}
-                </Card>
-
+            ) : !hasData ? (
                 <Card>
-                    <div className="table-toolbar mb-4">
-                        <Input
-                            placeholder="Search by patient name..."
-                            prefix={<FaSearch />}
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{ width: 300 }}
-                            allowClear
-                        />
-                        <Select
-                            value={ratingFilter}
-                            onChange={setRatingFilter}
-                            style={{ width: 150 }}
-                        >
-                            <Select.Option value="all">All Ratings</Select.Option>
-                            <Select.Option value="5">5 Stars</Select.Option>
-                            <Select.Option value="4">4 Stars</Select.Option>
-                            <Select.Option value="3">3 Stars</Select.Option>
-                            <Select.Option value="2">2 Stars</Select.Option>
-                            <Select.Option value="1">1 Star</Select.Option>
-                        </Select>
+                    <EmptyState type="generic" title="No available data right now" />
+                </Card>
+            ) : (
+                <div className="dashboard-card">
+                    <div className="dashboard-card-header">
+                        <h3 className="dashboard-card-title">Patient Reviews</h3>
                     </div>
 
-                    {filteredReviews?.length === 0 ? (
-                        <Empty description="No reviews found" />
-                    ) : (
-                        <div className="reviews-list">
-                            {filteredReviews?.map((review) => (
-                                <div key={review?.id} className="review-card">
-                                    <div className="review-header">
-                                        <div className="d-flex align-items-center">
-                                            <Avatar 
-                                                src={review?.patient?.img} 
-                                                size={50}
-                                            />
-                                            <div className="ms-3">
-                                                <h6 className="mb-1">
-                                                    {review?.patient?.firstName} {review?.patient?.lastName}
-                                                </h6>
-                                                <div className="text-muted small">
-                                                    {moment(review?.createdAt).format('MMM DD, YYYY')}
+                    <div className="stats-mini-grid mb-4">
+                        {stats.map((stat, index) => (
+                            <Card key={index} className={`stat-mini-card stat-mini-card-${stat.color}`}>
+                                <div className="stat-mini-details">
+                                    <div className="stat-mini-title">{stat.title}</div>
+                                    <div className="stat-mini-count">
+                                        {stat.icon && <span className="me-2">{stat.icon}</span>}
+                                        {stat.count}
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+
+                    <Card className="mb-4">
+                        <h5 className="mb-3">Rating Distribution</h5>
+                        {ratingDistribution.map(item => (
+                            <div key={item.star} className="rating-bar-container mb-2">
+                                <span className="rating-star">{item.star} <FaStar className="text-warning" /></span>
+                                <div className="rating-bar">
+                                    <div 
+                                        className="rating-bar-fill" 
+                                        style={{ width: `${item.percentage}%` }}
+                                    />
+                                </div>
+                                <span className="rating-count">{item.count}</span>
+                            </div>
+                        ))}
+                    </Card>
+
+                    <Card>
+                        <div className="table-toolbar mb-4">
+                            <Input
+                                placeholder="Search by patient name..."
+                                prefix={<FaSearch />}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                style={{ width: 300 }}
+                                allowClear
+                            />
+                            <Select
+                                value={ratingFilter}
+                                onChange={setRatingFilter}
+                                style={{ width: 150 }}
+                            >
+                                <Select.Option value="all">All Ratings</Select.Option>
+                                <Select.Option value="5">5 Stars</Select.Option>
+                                <Select.Option value="4">4 Stars</Select.Option>
+                                <Select.Option value="3">3 Stars</Select.Option>
+                                <Select.Option value="2">2 Stars</Select.Option>
+                                <Select.Option value="1">1 Star</Select.Option>
+                            </Select>
+                        </div>
+
+                        {filteredReviews?.length === 0 ? (
+                            <Empty description="No reviews found" />
+                        ) : (
+                            <div className="reviews-list">
+                                {filteredReviews?.map((review) => (
+                                    <div key={review?.id} className="review-card">
+                                        <div className="review-header">
+                                            <div className="d-flex align-items-center">
+                                                <Avatar 
+                                                    src={review?.patient?.img} 
+                                                    size={50}
+                                                />
+                                                <div className="ms-3">
+                                                    <h6 className="mb-1">
+                                                        {review?.patient?.firstName} {review?.patient?.lastName}
+                                                    </h6>
+                                                    <div className="text-muted small">
+                                                        {moment(review?.createdAt).format('MMM DD, YYYY')}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="text-end">
+                                                <Rate disabled value={review?.star} style={{ fontSize: 16 }} />
+                                                <div className="mt-2">
+                                                    <Tag 
+                                                        color={review?.isRecommended ? 'success' : 'error'}
+                                                        icon={review?.isRecommended ? <FaThumbsUp /> : <FaThumbsDown />}
+                                                    >
+                                                        {review?.isRecommended ? 'Recommended' : 'Not Recommended'}
+                                                    </Tag>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="text-end">
-                                            <Rate disabled value={review?.star} style={{ fontSize: 16 }} />
-                                            <div className="mt-2">
-                                                <Tag 
-                                                    color={review?.isRecommended ? 'success' : 'error'}
-                                                    icon={review?.isRecommended ? <FaThumbsUp /> : <FaThumbsDown />}
-                                                >
-                                                    {review?.isRecommended ? 'Recommended' : 'Not Recommended'}
-                                                </Tag>
-                                            </div>
+                                        <div className="review-body">
+                                            <p className="mb-0">{review?.description}</p>
                                         </div>
                                     </div>
-                                    <div className="review-body">
-                                        <p className="mb-0">{review?.description}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </Card>
-            </div>
+                                ))}
+                            </div>
+                        )}
+                    </Card>
+                </div>
+            )}
         </DashboardLayout>
     );
 };

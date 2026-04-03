@@ -3,6 +3,8 @@ import { Card, Empty, Skeleton, Input, Select, Button, Pagination } from 'antd';
 import { FaUserMd, FaBriefcaseMedical, FaHospital, FaGraduationCap } from 'react-icons/fa';
 import { useGetDoctorsQuery } from '../../redux/api/doctorApi';
 import { doctorSpecialistOptions } from '../../constant/global';
+import { safeArray } from '../../utils/safeData';
+import { mockDoctors } from '../../config/demoMode';
 import './AppointmentFlow.css';
 
 const PAGE_SIZE = 12;
@@ -25,9 +27,10 @@ const SelectDoctor = ({ selectedDoctor, onSelect }) => {
   );
 
   const { data, isLoading, isError } = useGetDoctorsQuery(queryParams);
-  const doctors = data?.doctors || [];
+  const apiDoctors = data?.doctors || [];
+  const doctors = safeArray(apiDoctors, mockDoctors);
   const meta = data?.meta || {};
-  const total = meta?.total ?? 0;
+  const total = meta?.total || (doctors === mockDoctors ? mockDoctors.length : 0);
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const handleSearchChange = (e) => {
@@ -94,14 +97,7 @@ const SelectDoctor = ({ selectedDoctor, onSelect }) => {
             </Card>
           ))}
         </div>
-      ) : isError ? (
-        <Empty description="Unable to load doctors. Please try again later." className="select-doctor-empty" />
-      ) : !doctors.length ? (
-        <Empty
-          description={debouncedSearch || specialtyFilter ? 'No doctors match your search or filter.' : 'No doctors available.'}
-          className="select-doctor-empty"
-        />
-      ) : (
+      ) : doctors.length > 0 ? (
         <>
           <div className="select-doctor-list select-doctor-list--rich">
             {doctors.map((doc) => {
@@ -186,6 +182,11 @@ const SelectDoctor = ({ selectedDoctor, onSelect }) => {
             </div>
           )}
         </>
+      ) : (
+        <Empty
+          description={debouncedSearch || specialtyFilter ? 'No doctors match your search or filter.' : 'No available data right now'}
+          className="select-doctor-empty"
+        />
       )}
     </div>
   );

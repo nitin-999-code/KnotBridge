@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useGetSingleBlogQuery } from '../../redux/api/blogApi';
-import { Empty, message } from 'antd';
+import { Empty } from 'antd';
 import BlogAside from './BlogAside';
 import Footer from '../Shared/Footer/Footer';
 import BlogComment from './BlogComment';
@@ -16,7 +16,7 @@ const BlogDetails = () => {
     const { data, isLoading, isError } = useGetSingleBlogQuery(id);
 
     let content = null;
-    if (!isLoading && isError) content = <div>{message.error('Something went Wrong!')}</div>
+    if (!isLoading && isError) content = <Empty description="No available data right now" />
     if (!isLoading && !isError && data?.id === undefined) content = <Empty />
     if (!isLoading && !isError && data?.id) content =
         <div className="card shadow-sm text-center border-0 rounded-bottom">
