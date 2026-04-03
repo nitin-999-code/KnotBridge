@@ -14,7 +14,7 @@
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.22em;
-	color: #1977cc;
+	color: #166534;
 	margin-bottom: 0.65rem;
 }
 
@@ -32,7 +32,7 @@
 	height: 3px;
 	margin: 0 auto 1.25rem;
 	border-radius: 2px;
-	background: linear-gradient(90deg, transparent, #1977cc, #3291e6, transparent);
+	background: linear-gradient(90deg, transparent, #166534, #3291e6, transparent);
 }
 
 .gallery-section__lead {

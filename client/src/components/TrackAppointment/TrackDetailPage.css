@@ -38,7 +38,7 @@
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.14em;
-	color: #1977cc;
+	color: #166534;
 	margin-bottom: 0.35rem;
 }
 
@@ -181,7 +181,7 @@
 }
 
 .track-detail-schedule__row svg {
-	color: #1977cc;
+	color: #166534;
 	margin-top: 3px;
 	flex-shrink: 0;
 }

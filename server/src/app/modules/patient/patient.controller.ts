@@ -44,7 +44,15 @@ const deletePatient = catchAsync(async (req: Request, res: Response) => {
 })
 
 const updatePatient = catchAsync(async (req: Request, res: Response) => {
-    const result = await PatientService.updatePatient(req.params.id, req.body);
+    let payload = req.body;
+    if (typeof req.body?.data === 'string') {
+        try {
+            payload = JSON.parse(req.body.data);
+        } catch (e) {
+            payload = req.body;
+        }
+    }
+    const result = await PatientService.updatePatient(req.params.id, payload);
     sendResponse<Patient>(res, {
         statusCode: 200,
         message: 'Successfully Updated Patient !!',

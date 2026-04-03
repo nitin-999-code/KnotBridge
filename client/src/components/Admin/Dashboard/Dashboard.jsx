@@ -8,7 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import './Dashboard.css';
 import moment from 'moment';
 
-const COLORS = ['#667eea', '#f093fb', '#fad0c4', '#a8edea', '#fed6e3'];
+const COLORS = ['#166534', '#f093fb', '#fad0c4', '#a8edea', '#fed6e3'];
 
 const AdminDashboard = () => {
     const { data: doctorsData, isLoading: doctorsLoading } = useGetDoctorsQuery({ limit: 100 });
@@ -190,7 +190,7 @@ const AdminDashboard = () => {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
-                                    <Line type="monotone" dataKey="appointments" stroke="#667eea" strokeWidth={2} />
+                                    <Line type="monotone" dataKey="appointments" stroke="#166534" strokeWidth={2} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </Card>

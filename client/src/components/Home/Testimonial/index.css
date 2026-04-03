@@ -13,7 +13,7 @@
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.1em;
-	color: #1977cc;
+	color: #166534;
 	margin-bottom: 0.5rem;
 }
 
@@ -41,7 +41,7 @@
 
 .testimonial-swiper .swiper-button-prev,
 .testimonial-swiper .swiper-button-next {
-	color: #1977cc;
+	color: #166534;
 }
 
 .testimonial-card {
@@ -89,7 +89,7 @@
 	align-items: center;
 	justify-content: center;
 	background: #e3f2fd;
-	color: #1977cc;
+	color: #166534;
 	font-size: 1.25rem;
 }
 

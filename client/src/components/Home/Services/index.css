@@ -13,7 +13,7 @@
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.1em;
-	color: #1977cc;
+	color: #166534;
 	margin-bottom: 0.5rem;
 }
 
@@ -84,7 +84,7 @@
 	height: 56px;
 	border-radius: 14px;
 	background: rgba(25, 119, 204, 0.12);
-	color: #1977cc;
+	color: #166534;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -111,13 +111,13 @@
 	display: inline-flex;
 	align-items: center;
 	font-weight: 600;
-	color: #1977cc;
+	color: #166534;
 	text-decoration: none;
 	transition: color 0.2s, transform 0.2s;
 }
 
 .service-cta:hover {
-	color: #1565a0;
+	color: #14532d;
 	transform: translateX(4px);
 }
 

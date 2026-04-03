@@ -37,17 +37,17 @@
 }
 
 .appointment-page .ant-steps-item-process .ant-steps-item-icon {
-  background: #1977cc !important;
-  border-color: #1977cc !important;
+  background: #166534 !important;
+  border-color: #166534 !important;
 }
 
 .appointment-page .ant-steps-item-finish .ant-steps-item-icon {
-  background: #1977cc !important;
-  border-color: #1977cc !important;
+  background: #166534 !important;
+  border-color: #166534 !important;
 }
 
 .appointment-page .ant-steps-item-finish .ant-steps-item-tail::after {
-  background: #1977cc !important;
+  background: #166534 !important;
 }
 
 /* Select Doctor cards */
@@ -59,7 +59,7 @@
 }
 
 .select-doctor-card--selected {
-  border-color: #1977cc !important;
+  border-color: #166534 !important;
   box-shadow: 0 4px 16px rgba(25, 119, 204, 0.2);
 }
 
@@ -95,7 +95,7 @@
 
 .select-doctor-card__designation {
   font-size: 0.85rem;
-  color: #1977cc;
+  color: #166534;
   margin: 0;
 }
 
@@ -178,7 +178,7 @@
 }
 
 .select-doctor-card--rich .select-doctor-card__meta-icon {
-  color: #1977cc;
+  color: #166534;
   flex-shrink: 0;
   min-width: 1rem;
 }
@@ -230,7 +230,7 @@
 }
 
 .datetime-summary__row .icon {
-  color: #1977cc;
+  color: #166534;
   font-size: 1rem;
   flex-shrink: 0;
 }
@@ -264,13 +264,13 @@
 }
 
 .datetime-date-card:hover {
-  border-color: #1977cc;
+  border-color: #166534;
   background: rgba(25, 119, 204, 0.06);
 }
 
 .datetime-date-card.datetime-date-card--active {
-  border-color: #1977cc;
-  background: #1977cc;
+  border-color: #166534;
+  background: #166534;
   color: #fff;
 }
 
@@ -383,11 +383,11 @@
 }
 
 .payment-method-option:hover {
-  border-color: #1977cc;
+  border-color: #166534;
 }
 
 .payment-method-option.payment-method-option--active {
-  border-color: #1977cc;
+  border-color: #166534;
   background: rgba(25, 119, 204, 0.08);
 }
 
@@ -417,7 +417,7 @@
 }
 
 .order-summary-card .summary-total .amount {
-  color: #1977cc;
+  color: #166534;
 }
 
 /* Success modal */
@@ -463,8 +463,8 @@
 }
 
 .appointment-actions .ant-btn-primary {
-  background: #1977cc;
-  border-color: #1977cc;
+  background: #166534;
+  border-color: #166534;
 }
 
 .appointment-actions .ant-btn-primary:hover {

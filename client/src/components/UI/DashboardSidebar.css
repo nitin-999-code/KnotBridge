@@ -11,7 +11,7 @@
 .dashboard-profile-header {
   padding: 2rem 1.5rem;
   text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #166534 0%, #15803d 100%);
   color: #fff;
 }
 
@@ -82,23 +82,23 @@
 
 .dashboard-nav a:hover {
   background: rgba(25, 119, 204, 0.06);
-  color: #1977cc;
-  border-left-color: #1977cc;
+  color: #166534;
+  border-left-color: #166534;
 }
 
 .dashboard-nav a:hover .icon {
-  color: #1977cc;
+  color: #166534;
 }
 
 .dashboard-nav a.active {
   background: rgba(25, 119, 204, 0.1);
-  color: #1977cc;
-  border-left-color: #1977cc;
+  color: #166534;
+  border-left-color: #166534;
   font-weight: 600;
 }
 
 .dashboard-nav a.active .icon {
-  color: #1977cc;
+  color: #166534;
 }
 
 .dashboard-nav-logout {

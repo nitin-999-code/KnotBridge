@@ -11,7 +11,7 @@ const theme = {
     primary:       '#166534',
     primaryLight:  '#15803d',
     primaryDark:   '#14532d',
-    primaryBg:     '#eefaff',
+    primaryBg:     '#f0fdf4',
     primaryGhost:  'rgba(22, 101, 52, 0.06)',
 
     // Accent — warm amber for CTAs / highlights

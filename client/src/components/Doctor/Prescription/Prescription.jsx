@@ -43,7 +43,7 @@ const DoctorPrescriptions = () => {
 			title: 'Appointment ID',
 			key: 'appointmentId',
 			width: 150,
-			render: (_, record) => <Tag color="#667eea">{record?.appointment?.trackingId || 'N/A'}</Tag>,
+			render: (_, record) => <Tag color="#166534">{record?.appointment?.trackingId || 'N/A'}</Tag>,
 		},
 		{
 			title: 'Patient / Case',

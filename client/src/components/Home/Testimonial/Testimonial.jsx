@@ -6,7 +6,7 @@ import StarRatings from 'react-star-ratings';
 import { truncate } from '../../../utils/truncate';
 import { FaCheck, FaUser } from 'react-icons/fa';
 import EmptyState from '../../UI/EmptyState';
-import { Empty } from 'antd';
+import { Empty, Button } from 'antd';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -88,6 +88,9 @@ const Testimonial = () => {
 		));
 	}
 
+	const isEmpty = !isLoading && !isError && (!data || data.length === 0);
+	const hasData = !isLoading && !isError && data?.length > 0;
+
 	return (
 		<section className="testimonial-section">
 			<div className="container">
@@ -96,22 +99,92 @@ const Testimonial = () => {
 					<h2>Testimonials</h2>
 					<p className="testimonial-section__lead">What our patients say about us</p>
 				</div>
-				<div className="testimonial-swiper-wrap">
-					<Swiper
-						spaceBetween={24}
-						slidesPerView={1}
-						modules={[Navigation, Autoplay]}
-						navigation
-						loop={data?.length > 1}
-						autoplay={{ delay: 2500, disableOnInteraction: false }}
-						breakpoints={{
-							768: { slidesPerView: 2 },
-						}}
-						className="testimonial-swiper"
-					>
-						{content}
-					</Swiper>
-				</div>
+
+				{isLoading && (
+					<div className="testimonial-swiper-wrap">
+						<div className="d-flex gap-4 justify-content-center">
+							{[1, 2].map((i) => (
+								<div key={i} className="testimonial-card testimonial-card--skeleton" style={{ flex: '0 0 45%', maxWidth: 500 }}>
+									<div className="testimonial-card__header">
+										<div className="testimonial-card__avatar" />
+										<div className="testimonial-card__meta-skeleton" />
+									</div>
+									<div className="testimonial-card__text-skeleton" />
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
+				{!isLoading && isError && (
+					<div className="text-center py-5">
+						<Empty
+							image={Empty.PRESENTED_IMAGE_SIMPLE}
+							description="Unable to load reviews right now."
+						/>
+					</div>
+				)}
+
+				{isEmpty && (
+					<div className="text-center py-5">
+						<div style={{ fontSize: '4rem', color: '#d1d5db', marginBottom: '1rem' }}>💬</div>
+						<h4 style={{ color: '#374151', fontWeight: 600, marginBottom: '0.5rem' }}>No reviews yet</h4>
+						<p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>Be the first to share your experience with our doctors.</p>
+						<Link to="/doctors">
+							<Button type="primary" size="large">Find a Doctor & Write Review</Button>
+						</Link>
+					</div>
+				)}
+
+				{hasData && (
+					<div className="testimonial-swiper-wrap">
+						<Swiper
+							spaceBetween={24}
+							slidesPerView={1}
+							modules={[Navigation, Autoplay]}
+							navigation
+							loop={data?.length > 1}
+							autoplay={{ delay: 2500, disableOnInteraction: false }}
+							breakpoints={{
+								768: { slidesPerView: 2 },
+							}}
+							className="testimonial-swiper"
+						>
+							{data.slice(0, 10).map((item) => (
+								<SwiperSlide key={item.id}>
+									<div className="testimonial-card">
+										<div className="testimonial-card__header">
+											<div className="testimonial-card__avatar">
+												{item?.patient?.img ? (
+													<img src={item.patient.img} alt="" />
+												) : (
+													<span className="testimonial-card__avatar-placeholder"><FaUser /></span>
+												)}
+											</div>
+											<div>
+												<h5 className="testimonial-card__name">
+													{item?.patient?.firstName} {item?.patient?.lastName}
+												</h5>
+												<p className="testimonial-card__badge"><FaCheck /> Recommended</p>
+											</div>
+										</div>
+										<p className="testimonial-card__text">{truncate(item?.description, 150)}</p>
+										<div className="testimonial-card__stars">
+											<StarRatings
+												rating={5}
+												starRatedColor="#f4c150"
+												numberOfStars={5}
+												name="rating"
+												starDimension="18px"
+												starSpacing="2px"
+											/>
+										</div>
+									</div>
+								</SwiperSlide>
+							))}
+						</Swiper>
+					</div>
+				)}
 			</div>
 		</section>
 	);

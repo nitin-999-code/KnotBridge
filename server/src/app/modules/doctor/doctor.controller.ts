@@ -44,7 +44,16 @@ const deleteDoctor = catchAsync(async (req: Request, res: Response) => {
 })
 
 const updateDoctor = catchAsync(async (req: Request, res: Response) => {
-    const result = await DoctorService.updateDoctor(req.params.id, req.body);
+    // Frontend sends multipart/form-data with JSON stringified in 'data' field
+    let payload = req.body;
+    if (typeof req.body?.data === 'string') {
+        try {
+            payload = JSON.parse(req.body.data);
+        } catch (e) {
+            payload = req.body;
+        }
+    }
+    const result = await DoctorService.updateDoctor(req.params.id, payload);
     sendResponse<Doctor>(res, {
         statusCode: 200,
         message: 'Successfully Updated Doctor !!',

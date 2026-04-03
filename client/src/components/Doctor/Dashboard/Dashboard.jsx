@@ -29,18 +29,7 @@ import './DashboardHome.css';
 const { Text } = Typography;
 
 const Dashboard = () => {
-	const { role, data } = useAuthCheck();
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (role === 'doctor' && data && Object.keys(data).length > 0 && !data.profileComplete) {
-			navigate('/dashboard/profile-setting');
-		}
-	}, [role, data, navigate]);
-
-	if (role === 'doctor' && data && !data.profileComplete) {
-		return null; // Wait for redirect
-	}
+	const { role } = useAuthCheck();
 
 	return (
 		<DashboardLayout>
@@ -202,7 +191,7 @@ const DoctorDashboard = () => {
 						<YAxis />
 						<Tooltip />
 						<Legend />
-						<Bar dataKey="appointments" fill="#667eea" radius={[6, 6, 0, 0]} />
+						<Bar dataKey="appointments" fill="#166534" radius={[6, 6, 0, 0]} />
 					</BarChart>
 				</ResponsiveContainer>
 			</div>

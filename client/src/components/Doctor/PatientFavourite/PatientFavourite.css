@@ -11,7 +11,7 @@
     margin-bottom: 1.75rem;
     padding: 1.5rem 1.75rem;
     border-radius: 16px;
-    background: linear-gradient(125deg, #0f172a 0%, #1e3a5f 55%, #1977cc 100%);
+    background: linear-gradient(125deg, #0f172a 0%, #1e3a5f 55%, #166534 100%);
     color: #fff;
     box-shadow: 0 16px 40px -12px rgba(15, 23, 42, 0.4);
 }
@@ -99,7 +99,7 @@
 }
 
 .doctor-name a {
-    color: #1977cc;
+    color: #166534;
     text-decoration: none;
 }
 
@@ -146,7 +146,7 @@
 }
 
 .info-icon {
-    color: #1977cc;
+    color: #166534;
     font-size: 0.875rem;
 }
 

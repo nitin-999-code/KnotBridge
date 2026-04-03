@@ -7,13 +7,13 @@
 	margin-bottom: 1.75rem;
 	padding: 1.5rem 1.75rem;
 	border-radius: 16px;
-	background: linear-gradient(125deg, #0f172a 0%, #1e3a5f 55%, #1977cc 100%);
+	background: linear-gradient(125deg, #0f172a 0%, #14532d 55%, #166534 100%);
 	color: #fff;
 	box-shadow: 0 16px 40px -12px rgba(15, 23, 42, 0.45);
 }
 
 .dash-home__welcome--doctor {
-	background: linear-gradient(125deg, #1a2744 0%, #243b55 50%, #667eea 100%);
+	background: linear-gradient(125deg, #0f172a 0%, #14532d 50%, #166534 100%);
 }
 
 .dash-home__welcome-title {
@@ -74,15 +74,15 @@
 }
 
 .dash-home__quick-card:hover {
-	border-color: rgba(25, 119, 204, 0.35);
-	box-shadow: 0 8px 24px rgba(25, 119, 204, 0.12);
+	border-color: rgba(22, 101, 52, 0.35);
+	box-shadow: 0 8px 24px rgba(22, 101, 52, 0.12);
 	transform: translateY(-2px);
 	color: inherit;
 }
 
 .dash-home__quick-icon {
 	font-size: 1.35rem;
-	color: #1977cc;
+	color: #166534;
 	flex-shrink: 0;
 }
 

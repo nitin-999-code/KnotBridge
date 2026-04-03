@@ -158,8 +158,7 @@ const DoctorBooking = () => {
         const obj = {
             doctorId: doctorId,
             appointmentTime: new Date(`${selectedDate} ${selectTime}`).toISOString(),
-            totalAmount: 150,
-            status: 'pending'
+            totalAmount: parseInt(data?.price) || 150,
         };
         createAppointment(obj);
     }

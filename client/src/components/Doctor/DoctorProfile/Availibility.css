@@ -17,7 +17,7 @@
 
 /* Status Card */
 .availability-status-card {
-	background: linear-gradient(135deg, #1977cc 0%, #1565a0 100%);
+	background: linear-gradient(135deg, #166534 0%, #14532d 100%);
 	border-radius: 16px;
 	padding: 2rem;
 	color: #fff;
@@ -158,7 +158,7 @@
 	font-size: 0.7rem;
 	font-weight: 700;
 	text-transform: uppercase;
-	color: #1977cc;
+	color: #166534;
 	background: rgba(25, 119, 204, 0.1);
 	padding: 3px 8px;
 	border-radius: 12px;

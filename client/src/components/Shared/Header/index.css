@@ -119,6 +119,8 @@
     transition: all var(--transition-fast);
     padding: 6px 2px;
     letter-spacing: 0.01em;
+    text-decoration: none !important;
+    border-bottom: 2px solid transparent;
 }
 
 .navbar a i,
@@ -133,6 +135,8 @@
 .navbar .active:focus,
 .navbar li:hover>a {
     color: var(--primary);
+    text-decoration: none !important;
+    border-bottom-color: var(--primary);
 }
 
 .navbar .dropdown ul {

@@ -145,7 +145,7 @@
 }
 
 .track-page__title-icon {
-	color: #1977cc;
+	color: #166534;
 	font-size: 1.35rem;
 }
 
@@ -192,14 +192,14 @@
 
 .track-page__info-icon {
 	font-size: 1.75rem;
-	color: #1977cc;
+	color: #166534;
 	margin-bottom: 0.75rem;
 	display: block;
 }
 
 .track-page__link {
 	font-weight: 600;
-	color: #1977cc;
+	color: #166534;
 	text-decoration: none;
 }
 
@@ -315,8 +315,8 @@
 }
 
 .track-page__recent-tag:hover {
-	color: #1977cc !important;
-	border-color: #1977cc !important;
+	color: #166534 !important;
+	border-color: #166534 !important;
 }
 
 .track-page__banner-error {
@@ -351,7 +351,7 @@
 	height: 36px;
 	margin: 0 auto 0.75rem;
 	border-radius: 50%;
-	background: linear-gradient(135deg, #1977cc 0%, #1565a0 100%);
+	background: linear-gradient(135deg, #166534 0%, #14532d 100%);
 	color: #fff;
 	font-weight: 800;
 	font-size: 1rem;

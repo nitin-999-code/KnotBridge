@@ -14,10 +14,10 @@
     margin-top: 2px;
 }
 .select-date{
-    border: 2px solid #1977cc;
+    border: 2px solid #166534;
     width: 100%;
     cursor: pointer;
-    color: #1977cc;
+    color: #166534;
     transition: 0.6s ease-in;
 }
 
@@ -35,11 +35,11 @@
     font-size: 16px;
 }
 .info-date-card .active{
-    background-color: #1977cc;
+    background-color: #166534;
     color: white !important;
 }
 
 .select-date:hover{
-    background-color: #1977cc;
+    background-color: #166534;
     color: white !important;
 }

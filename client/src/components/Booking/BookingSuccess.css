@@ -142,7 +142,7 @@
 	height: 40px;
 	border-radius: 12px;
 	background: rgba(25, 119, 204, 0.1);
-	color: #1977cc;
+	color: #166534;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -203,7 +203,7 @@
 	height: 64px;
 	border-radius: 16px;
 	background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-	color: #1977cc;
+	color: #166534;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -220,7 +220,7 @@
 
 .booking-success-doctor__role {
 	font-size: 0.85rem;
-	color: #1977cc;
+	color: #166534;
 	font-weight: 600;
 	margin: 0;
 }

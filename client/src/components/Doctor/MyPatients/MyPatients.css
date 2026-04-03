@@ -19,7 +19,7 @@
 }
 
 .stat-mini-card-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #166534 0%, #15803d 100%);
     color: white;
 }
 
@@ -71,7 +71,7 @@
 
 .patient-details-modal .info-icon {
     font-size: 1.25rem;
-    color: #667eea;
+    color: #166534;
     margin-right: 1rem;
     margin-top: 0.25rem;
 }

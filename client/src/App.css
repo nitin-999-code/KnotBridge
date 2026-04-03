@@ -16,7 +16,7 @@
   --primary:       #166534;
   --primary-light: #15803d;
   --primary-dark:  #14532d;
-  --primary-bg:    #eefaff;
+  --primary-bg:    #f0fdf4;
   --primary-ghost: rgba(22, 101, 52, 0.06);
 
   /* ── Accent ── */
@@ -232,3 +232,83 @@ a:hover { color: var(--primary-light); }
   border: 1px solid rgba(255,255,255,0.4);
   border-radius: var(--radius-lg);
 }
+
+/* ══════════════════════════════════════════════════════════════
+   Ant Design — Force Green Theme Everywhere
+   ══════════════════════════════════════════════════════════════ */
+
+/* Steps */
+.ant-steps .ant-steps-item-process .ant-steps-item-icon {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+.ant-steps .ant-steps-item-finish .ant-steps-item-icon {
+  border-color: var(--primary) !important;
+}
+.ant-steps .ant-steps-item-finish .ant-steps-item-icon .ant-steps-icon {
+  color: var(--primary) !important;
+}
+.ant-steps .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
+  background-color: var(--primary) !important;
+}
+.ant-steps .ant-steps-item-process .ant-steps-item-title::after {
+  background-color: var(--border) !important;
+}
+
+/* Tabs */
+.ant-tabs .ant-tabs-ink-bar {
+  background: var(--primary) !important;
+}
+.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--primary) !important;
+}
+.ant-tabs .ant-tabs-tab:hover {
+  color: var(--primary-light) !important;
+}
+
+/* Switch */
+.ant-switch.ant-switch-checked {
+  background: var(--primary) !important;
+}
+
+/* Pagination */
+.ant-pagination .ant-pagination-item-active {
+  border-color: var(--primary) !important;
+}
+.ant-pagination .ant-pagination-item-active a {
+  color: var(--primary) !important;
+}
+
+/* Links globally */
+.ant-btn-link, .ant-btn-link:hover {
+  color: var(--primary) !important;
+}
+
+/* Checkbox */
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Radio */
+.ant-radio-checked .ant-radio-inner {
+  border-color: var(--primary) !important;
+}
+.ant-radio-checked .ant-radio-inner::after {
+  background-color: var(--primary) !important;
+}
+
+/* Rate stars */
+.ant-rate .ant-rate-star-full .anticon,
+.ant-rate .ant-rate-star-half .ant-rate-star-first .anticon {
+  color: #f4c150 !important;
+}
+
+/* Spin */
+.ant-spin .ant-spin-dot-item {
+  background-color: var(--primary) !important;
+}
+
+/* Remove all link underlines globally */
+a { text-decoration: none !important; }
+a:hover { text-decoration: none !important; }

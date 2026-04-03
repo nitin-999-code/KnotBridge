@@ -43,7 +43,7 @@
 }
 
 .overview-section__icon {
-	color: #1977cc;
+	color: #166534;
 	font-size: 1.25rem;
 }
 
@@ -71,7 +71,7 @@
 	top: 8px;
 	bottom: 8px;
 	width: 2px;
-	background: linear-gradient(180deg, #1977cc 0%, #e0e0e0 100%);
+	background: linear-gradient(180deg, #166534 0%, #e0e0e0 100%);
 }
 
 .timeline-item {
@@ -90,7 +90,7 @@
 	width: 12px;
 	height: 12px;
 	border-radius: 50%;
-	background: #1977cc;
+	background: #166534;
 	border: 3px solid #fff;
 	box-shadow: 0 0 0 3px rgba(25, 119, 204, 0.2);
 }
@@ -99,7 +99,7 @@
 	background: #f8fafc;
 	border-radius: 12px;
 	padding: 1.25rem;
-	border-left: 3px solid #1977cc;
+	border-left: 3px solid #166534;
 	transition: all 0.3s;
 }
 
@@ -128,7 +128,7 @@
 .timeline-year {
 	font-size: 0.85rem;
 	font-weight: 600;
-	color: #1977cc;
+	color: #166534;
 	background: rgba(25, 119, 204, 0.1);
 	padding: 4px 12px;
 	border-radius: 20px;
@@ -175,7 +175,7 @@
 }
 
 .overview-card__icon {
-	color: #1977cc;
+	color: #166534;
 	font-size: 1rem;
 }
 
@@ -227,7 +227,7 @@
 
 .award-item span {
 	font-size: 0.8rem;
-	color: #1977cc;
+	color: #166534;
 	font-weight: 600;
 }
 

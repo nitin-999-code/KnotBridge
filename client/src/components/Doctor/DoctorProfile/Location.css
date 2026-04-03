@@ -53,13 +53,13 @@
 
 .location-card__specialty {
 	font-size: 0.9rem;
-	color: #1977cc;
+	color: #166534;
 	font-weight: 600;
 	margin: 0;
 }
 
 .location-card__price-badge {
-	background: linear-gradient(135deg, #1977cc 0%, #1565a0 100%);
+	background: linear-gradient(135deg, #166534 0%, #14532d 100%);
 	color: #fff;
 	font-size: 1.1rem;
 	font-weight: 700;
@@ -83,7 +83,7 @@
 }
 
 .location-card__icon {
-	color: #1977cc;
+	color: #166534;
 	font-size: 1.1rem;
 	margin-top: 2px;
 	flex-shrink: 0;
@@ -101,7 +101,7 @@
 	align-items: center;
 	gap: 6px;
 	font-size: 0.85rem;
-	color: #1977cc;
+	color: #166534;
 	font-weight: 600;
 	margin-top: 0.5rem;
 	text-decoration: none;
@@ -109,7 +109,7 @@
 }
 
 .location-card__directions:hover {
-	color: #1565a0;
+	color: #14532d;
 }
 
 .location-card__schedule {
@@ -129,7 +129,7 @@
 }
 
 .location-card__schedule-title svg {
-	color: #1977cc;
+	color: #166534;
 }
 
 .schedule-list {
