@@ -63,11 +63,11 @@ const Reviews = () => {
         );
     }
 
-    if (isError) {
+    if (!data || data.length === 0) {
         return (
             <DashboardLayout>
                 <Card>
-                    <EmptyState type="generic" title="Unable to load reviews" description="Please try again later." />
+                    <EmptyState type="generic" title="No available data right now" />
                 </Card>
             </DashboardLayout>
         );

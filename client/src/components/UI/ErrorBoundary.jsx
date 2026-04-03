@@ -30,7 +30,7 @@ class ErrorBoundary extends React.Component {
             <div style={styles.iconCircle}>
               <span style={styles.icon}>⚠️</span>
             </div>
-            <h2 style={styles.title}>Something went wrong</h2>
+            <h2 style={styles.title}>No available data right now</h2>
             <p style={styles.description}>
               An unexpected error occurred. Don't worry — your data is safe.
               Try refreshing the page or go back to the homepage.

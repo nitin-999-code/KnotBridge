@@ -51,6 +51,12 @@ const Blog = () => {
 				</article>
 			</div>
 		));
+	} else {
+		content = (
+			<div className="col-12 py-5">
+				<Empty description="No available data right now" />
+			</div>
+		);
 	}
 
 	return (

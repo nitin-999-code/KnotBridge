@@ -74,19 +74,7 @@ const SearchDoctor = () => {
                 <SkeletonCard count={6} className="col-lg-4 col-md-6" />
             </div>
         );
-    } else if (isError) {
-        content = (
-            <div className="mt-5">
-                <EmptyState type="generic" title="Unable to load doctors" description="Please try again later." />
-            </div>
-        );
-    } else if (!doctorsData.length) {
-        content = (
-            <div className="mt-5">
-                <EmptyState type="doctors" onAction={resetFilter} actionText="Reset Filters" />
-            </div>
-        );
-    } else {
+    } else if (doctorsData && doctorsData.length > 0) {
         content = (
             <div className="row g-4 mt-2">
                 {doctorsData.map((item) => (
@@ -94,6 +82,12 @@ const SearchDoctor = () => {
                         <SearchContent data={item} />
                     </div>
                 ))}
+            </div>
+        );
+    } else {
+        content = (
+            <div className="mt-5">
+                <EmptyState type="generic" title="No available data right now" onAction={resetFilter} actionText="Reset Filters" />
             </div>
         );
     }

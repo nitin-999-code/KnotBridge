@@ -44,19 +44,7 @@ const Blog = () => {
                 <SkeletonCard count={3} className="col-lg-4 col-md-6 mb-4" />
             </div>
         );
-    } else if (isError) {
-        content = (
-            <div className="w-100">
-                <EmptyState type="generic" title="Unable to load posts" />
-            </div>
-        );
-    } else if (!blogData || blogData.length === 0) {
-        content = (
-            <div className="w-100">
-                <EmptyState type="blogs" />
-            </div>
-        );
-    } else {
+    } else if (blogData && blogData.length > 0) {
         content = blogData.map((item) => (
             <div className="col-lg-4 col-md-6 mb-4" key={item.id}>
                 <div className="blog-card-modern">
@@ -83,6 +71,12 @@ const Blog = () => {
                 </div>
             </div>
         ));
+    } else {
+        content = (
+            <div className="w-100">
+                <EmptyState type="generic" title="No available data right now" />
+            </div>
+        );
     }
 
     return (

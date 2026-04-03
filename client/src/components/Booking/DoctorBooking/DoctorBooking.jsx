@@ -47,7 +47,9 @@ const DoctorBooking = () => {
     const { doctorId } = useParams();
     const navigation = useNavigate();
     const { data: apiData, isLoading, isError, error } = useGetDoctorQuery(doctorId);
-    const data = (!isLoading && !apiData?.id) ? (mockDoctors.find(d => d.id === doctorId) || mockDoctors[0]) : apiData;
+    let data = (!isLoading && !apiData?.id) ? (mockDoctors.find(d => d.id === doctorId) || mockDoctors[0]) : apiData;
+
+    if (!data) data = mockDoctors[0];
     
     const { data: time, refetch, isLoading: dIsLoading, isError: dIsError, error: dError } = useGetAppointmentTimeQuery({ day: selectDay, id: data?.id });
 
@@ -79,8 +81,8 @@ const DoctorBooking = () => {
 
     let dContent = null;
     if (dIsLoading) dContent = <div>Loading time slots...</div>
-    if (!dIsLoading && dIsError) dContent = <div className="text-danger">No available time slots for this date</div>
-    if (!dIsLoading && !dIsError && (!time || time.length === 0)) dContent = <Empty description="No available time slots for this date" />
+    if (!dIsLoading && dIsError) dContent = <div className="text-danger">No available data right now</div>
+    if (!dIsLoading && !dIsError && (!time || time.length === 0)) dContent = <Empty description="No available data right now" />
     if (!dIsLoading && !dIsError && time.length > 0) dContent =
         <>
             {
