@@ -4,8 +4,10 @@ import SearchSidebar from './SearchSidebar';
 import SearchContent from './SearchContent';
 import { useDebounced } from '../../../utils/hooks/useDebounced';
 import { useGetDoctorsQuery } from '../../../redux/api/doctorApi';
-import { Empty, Pagination, Spin } from 'antd';
+import { Pagination } from 'antd';
 import Header from '../../Shared/Header/Header';
+import { SkeletonCard, EmptyState } from '../../UI';
+import { useDemoFallback, mockDoctors } from '../../../config/demoMode';
 import './SearchDoctor.css';
 
 const SearchDoctor = () => {
@@ -58,28 +60,29 @@ const SearchDoctor = () => {
     };
 
     const { data, isLoading, isError } = useGetDoctorsQuery(query);
-    const doctorsData = data?.doctors ?? [];
+    const apiDoctorsData = data?.doctors ?? [];
+    const doctorsData = useDemoFallback(apiDoctorsData, mockDoctors);
+    
     const meta = data?.meta;
-    const total = meta?.total ?? 0;
+    const total = meta?.total || (doctorsData === mockDoctors ? mockDoctors.length : 0);
 
     let content = null;
     if (isLoading) {
         content = (
-            <div className="search-doctor-loading text-center mt-5">
-                <Spin size="large" />
-                <p className="mt-3">Finding doctors...</p>
+            <div className="row g-4 mt-2">
+                <SkeletonCard count={6} className="col-lg-4 col-md-6" />
             </div>
         );
     } else if (isError) {
         content = (
-            <div className="search-doctor-error text-center mt-5">
-                <p>Unable to load doctors. Please try again later.</p>
+            <div className="mt-5">
+                <EmptyState type="generic" title="Unable to load doctors" description="Please try again later." />
             </div>
         );
     } else if (!doctorsData.length) {
         content = (
-            <div className="search-doctor-empty text-center mt-5">
-                <Empty description="No doctors match your filters" />
+            <div className="mt-5">
+                <EmptyState type="doctors" onAction={resetFilter} actionText="Reset Filters" />
             </div>
         );
     } else {

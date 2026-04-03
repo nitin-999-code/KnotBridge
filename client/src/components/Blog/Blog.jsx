@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import Footer from '../Shared/Footer/Footer';
 import { useGetAllBlogsQuery } from '../../redux/api/blogApi';
 import { useDebounced } from '../../redux/hooks';
-import { Empty, Pagination, Spin, Input } from 'antd';
+import { Pagination, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import Header from '../Shared/Header/Header';
+import { SkeletonCard, EmptyState } from '../UI';
+import { useDemoFallback, mockBlogPosts } from '../../config/demoMode';
 import { truncate } from '../../utils/truncate';
 import { FaUser, FaCalendarAlt, FaArrowRight, FaSearch } from 'react-icons/fa';
 import moment from 'moment';
@@ -23,9 +25,11 @@ const Blog = () => {
     };
 
     const { data, isError, isLoading } = useGetAllBlogsQuery(query);
-    const blogData = data?.blogs;
+    const apiBlogData = data?.blogs;
+    const blogData = useDemoFallback(apiBlogData, mockBlogPosts);
+    
     const meta = data?.meta;
-    const total = meta?.total ?? 0;
+    const total = meta?.total || (blogData === mockBlogPosts ? mockBlogPosts.length : 0);
 
     const onPageChange = (newPage, newPageSize) => {
         setPage(newPage);
@@ -35,21 +39,20 @@ const Blog = () => {
     let content = null;
     if (isLoading) {
         content = (
-            <div className="text-center py-5 w-100">
-                <Spin size="large" />
-                <p className="mt-3 text-muted">Loading posts...</p>
+            <div className="row w-100">
+                <SkeletonCard count={3} className="col-lg-4 col-md-6 mb-4" />
             </div>
         );
     } else if (isError) {
         content = (
-            <div className="text-center py-5 w-100">
-                <p className="text-danger">Unable to load posts. Please try again later.</p>
+            <div className="w-100">
+                <EmptyState type="generic" title="Unable to load posts" />
             </div>
         );
     } else if (!blogData || blogData.length === 0) {
         content = (
-            <div className="text-center py-5 w-100">
-                <Empty description="No blog posts found" />
+            <div className="w-100">
+                <EmptyState type="blogs" />
             </div>
         );
     } else {

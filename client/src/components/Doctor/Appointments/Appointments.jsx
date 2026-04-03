@@ -5,6 +5,8 @@ import { FaEye, FaCheck, FaTimes, FaBriefcaseMedical, FaSearch } from 'react-ico
 import { useGetDoctorAppointmentsQuery, useUpdateAppointmentMutation } from '../../../redux/api/appointmentApi';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import { useDemoFallback, mockAppointments } from '../../../config/demoMode';
+import { EmptyState } from '../../UI';
 import './Appointments.css';
 
 const { RangePicker } = DatePicker;
@@ -19,7 +21,8 @@ const Appointments = () => {
     const { data, isLoading, refetch } = useGetDoctorAppointmentsQuery({});
     const [updateAppointment, { isLoading: isUpdating }] = useUpdateAppointmentMutation();
 
-    const appointments = data || [];
+    const apiAppointments = data || [];
+    const appointments = useDemoFallback(apiAppointments, mockAppointments);
 
     const filteredAppointments = useMemo(() => {
         let result = appointments;
@@ -270,6 +273,9 @@ const Appointments = () => {
                             setPage(p);
                             setPageSize(ps);
                         },
+                    }}
+                    locale={{
+                        emptyText: <EmptyState type="appointments" />
                     }}
                     scroll={{ x: 1200 }}
                 />

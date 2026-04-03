@@ -1,33 +1,226 @@
+/* ═══════════════════════════════════════════════════════════════
+   MediBook — Global Design Tokens & Base Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 * {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
+
 :root {
-  --primary: #0C7A5E;
-  --primary-light: #07B07A;
-  --primary-bg: #F0FBF7;
-  --dark: #0D2B24;
-  --text-main: #1a1a2e;
-  --text-muted: #6b7280;
-  --border: #e5e7eb;
-  --white: #ffffff;
-  --shadow: 0 2px 16px rgba(12,122,94,0.08);
+  /* ── Primary palette ── */
+  --primary:       #0A6E55;
+  --primary-light: #0D9E7A;
+  --primary-dark:  #064D3B;
+  --primary-bg:    #EEFAF5;
+  --primary-ghost: rgba(10,110,85,0.06);
+
+  /* ── Accent ── */
+  --accent:        #E8913A;
+  --accent-light:  #F5B870;
+  --accent-bg:     #FFF8EE;
+
+  /* ── Backgrounds ── */
+  --white:      #FFFFFF;
+  --bg-page:    #F7F9FC;
+  --bg-card:    #FFFFFF;
+  --bg-muted:   #F1F4F8;
+
+  /* ── Text ── */
+  --text-main:   #111928;
+  --text-sec:    #4B5563;
+  --text-muted:  #9CA3AF;
+  --text-inv:    #FFFFFF;
+
+  /* ── Borders ── */
+  --border:       #E5E7EB;
+  --border-light: #F3F4F6;
+
+  /* ── Semantic ── */
+  --success:    #059669;
+  --success-bg: #ECFDF5;
+  --warning:    #D97706;
+  --warning-bg: #FFFBEB;
+  --error:      #DC2626;
+  --error-bg:   #FEF2F2;
+  --info:       #2563EB;
+  --info-bg:    #EFF6FF;
+
+  /* ── Dark ── */
+  --dark:       #0B1F1A;
+  --dark-muted: rgba(255,255,255,0.7);
+
+  /* ── Shadows ── */
+  --shadow-xs:  0 1px 2px rgba(0,0,0,0.05);
+  --shadow-sm:  0 2px 8px rgba(0,0,0,0.06);
+  --shadow:     0 4px 16px rgba(10,110,85,0.08);
+  --shadow-lg:  0 8px 30px rgba(10,110,85,0.12);
+  --shadow-xl:  0 12px 48px rgba(0,0,0,0.12);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.05);
+  --shadow-card-hover: 0 8px 30px rgba(10,110,85,0.14);
+  --shadow-btn: 0 2px 8px rgba(10,110,85,0.18);
+
+  /* ── Radius ── */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-full: 9999px;
+
+  /* ── Transitions ── */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   400ms ease;
+
+  /* ── Layout ── */
+  --max-width:   1280px;
+  --nav-height:  72px;
 }
+
+/* ── Base body ── */
 body {
-  background: #ffffff;
+  background: var(--bg-page);
   color: var(--text-main);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-a { color: var(--primary); text-decoration: none; }
+
+/* ── Links ── */
+a { color: var(--primary); text-decoration: none; transition: color var(--transition-fast); }
 a:hover { color: var(--primary-light); }
+
+/* ── Selection ── */
+::selection {
+  background: var(--primary-bg);
+  color: var(--primary-dark);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-muted); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ══════════════════════════════════════════════════════════════
+   Global Component Overrides
+   ══════════════════════════════════════════════════════════════ */
+
+/* Ant Design Primary Button */
 .ant-btn-primary {
   background: var(--primary) !important;
   border-color: var(--primary) !important;
-  border-radius: 8px !important;
+  border-radius: var(--radius-md) !important;
   font-weight: 500 !important;
+  box-shadow: var(--shadow-btn) !important;
+  transition: all var(--transition-normal) !important;
 }
 .ant-btn-primary:hover {
   background: var(--primary-light) !important;
   border-color: var(--primary-light) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg) !important;
+}
+.ant-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Ant Design Default Button */
+.ant-btn-default {
+  border-radius: var(--radius-md) !important;
+  border-color: var(--border) !important;
+  transition: all var(--transition-normal) !important;
+}
+.ant-btn-default:hover {
+  border-color: var(--primary) !important;
+  color: var(--primary) !important;
+}
+
+/* ── Card base ── */
+.ant-card {
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--border-light) !important;
+  box-shadow: var(--shadow-card) !important;
+  transition: all var(--transition-normal) !important;
+}
+.ant-card:hover {
+  box-shadow: var(--shadow-card-hover) !important;
+  transform: translateY(-2px);
+}
+
+/* ── Input / Select ── */
+.ant-input,
+.ant-select-selector,
+.ant-picker {
+  border-radius: var(--radius-md) !important;
+  border-color: var(--border) !important;
+  transition: all var(--transition-fast) !important;
+}
+.ant-input:focus,
+.ant-input-focused,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-ghost) !important;
+}
+
+/* ── Unified section title ── */
+.section-title {
+  margin-bottom: 48px;
+  text-align: center;
+}
+.section-title h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+.section-title p {
+  font-size: 16px;
+  color: var(--text-sec);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ── Utility: Title Underline ── */
+.title-underline {
+  width: 56px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  border-radius: var(--radius-full);
+  margin: 12px auto 0;
+}
+
+/* ── Utility: Page fade-in ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+/* ── Utility: Shimmer for skeletons ── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--bg-muted) 25%, var(--border-light) 50%, var(--bg-muted) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: var(--radius-md);
+}
+
+/* ── Utility: Glassmorphism panel ── */
+.glass-panel {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: var(--radius-lg);
 }
