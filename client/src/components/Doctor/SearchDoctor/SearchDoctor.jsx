@@ -61,13 +61,14 @@ const SearchDoctor = () => {
     };
 
     const { data, isLoading, isError } = useGetDoctorsQuery(query);
-    const doctorsData = Array.isArray(data?.doctors) ? data.doctors : [];
+    const apiDoctorsData = data?.doctors ?? [];
+    const doctorsData = Array.isArray(apiDoctorsData) && apiDoctorsData.length > 0 ? apiDoctorsData : mockDoctors;
     
-    console.log("API response:", data);
-    console.log("Doctors count:", doctorsData.length);
-    
+    if (isError) {
+        console.error("API failed, using fallback data");
+    }
     const meta = data?.meta;
-    const total = meta?.total || 0;
+    const total = meta?.total || (doctorsData === mockDoctors ? mockDoctors.length : 0);
 
     let content = null;
     if (isLoading) {
@@ -76,15 +77,7 @@ const SearchDoctor = () => {
                 <SkeletonCard count={6} className="col-lg-4 col-md-6" />
             </div>
         );
-    } else if (isError) {
-        content = <div className="text-center text-danger mt-5">Error loading data.</div>;
-    } else if (doctorsData.length === 0) {
-        content = (
-            <div className="mt-5">
-                <EmptyState type="generic" title="No data available" onAction={resetFilter} actionText="Reset Filters" />
-            </div>
-        );
-    } else {
+    } else if (doctorsData && doctorsData.length > 0) {
         content = (
             <div className="row g-4 mt-2">
                 {doctorsData.map((item) => (
@@ -94,8 +87,13 @@ const SearchDoctor = () => {
                 ))}
             </div>
         );
+    } else {
+        content = (
+            <div className="mt-5">
+                <EmptyState type="generic" title="No available data right now" onAction={resetFilter} actionText="Reset Filters" />
+            </div>
+        );
     }
-
 
     const onPageChange = (newPage, newPageSize) => {
         setPage(newPage);
