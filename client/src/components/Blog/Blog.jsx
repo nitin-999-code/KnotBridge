@@ -6,7 +6,7 @@ import { Pagination, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import Header from '../Shared/Header/Header';
 import { SkeletonCard, EmptyState } from '../UI';
-import { mockBlogs } from '../../data/mockBlogs';
+import { mockBlogPosts } from '../../config/demoMode';
 import { safeArray } from '../../utils/safeData';
 import { truncate } from '../../utils/truncate';
 import { FaUser, FaCalendarAlt, FaArrowRight, FaSearch } from 'react-icons/fa';
@@ -27,17 +27,10 @@ const Blog = () => {
 
     const { data, isError, isLoading } = useGetAllBlogsQuery(query);
     const apiBlogData = data?.blogs;
-    const blogData = Array.isArray(apiBlogData) && apiBlogData.length > 0 ? apiBlogData : mockBlogs;
+    const blogData = safeArray(apiBlogData, mockBlogPosts);
     
-    if (isError) {
-        console.error("API failed, using fallback data");
-    }
-    
-    console.log("API response:", data);
-    console.log("Blogs count:", blogData?.length || 0);
-
     const meta = data?.meta;
-    const total = meta?.total || (blogData === mockBlogs ? mockBlogs.length : 0);
+    const total = meta?.total || (blogData === mockBlogPosts ? mockBlogPosts.length : 0);
 
     const onPageChange = (newPage, newPageSize) => {
         setPage(newPage);

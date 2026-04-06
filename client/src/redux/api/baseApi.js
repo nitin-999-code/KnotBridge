@@ -1,13 +1,11 @@
-import { createApi, retry } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
 import { tagTypeList } from '../tag-types'
 import { axiosBaseQuery } from '../../helpers/axios/axiosBaseQuery'
 import { getBaseUrl } from '../../helpers/config/envConfig'
 
-const baseQueryWithRetry = retry(axiosBaseQuery({ baseUrl: getBaseUrl() }), { maxRetries: 1 });
-
 export const baseApi = createApi({
     reducerPath: 'api',
-    baseQuery: baseQueryWithRetry,
+    baseQuery: axiosBaseQuery({ baseUrl: getBaseUrl() }),
     keepUnusedDataFor: 600,
     refetchOnMountOrArgChange: 300,
     endpoints: () => ({}),
