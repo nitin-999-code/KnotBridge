@@ -26,13 +26,18 @@ const Blog = () => {
     };
 
     const { data, isError, isLoading } = useGetAllBlogsQuery(query);
-    const blogData = Array.isArray(data?.blogs) ? data.blogs : [];
+    const apiBlogData = data?.blogs;
+    const blogData = Array.isArray(apiBlogData) && apiBlogData.length > 0 ? apiBlogData : mockBlogs;
+    
+    if (isError) {
+        console.error("API failed, using fallback data");
+    }
     
     console.log("API response:", data);
-    console.log("Blogs count:", blogData.length);
+    console.log("Blogs count:", blogData?.length || 0);
 
     const meta = data?.meta;
-    const total = meta?.total || 0;
+    const total = meta?.total || (blogData === mockBlogs ? mockBlogs.length : 0);
 
     const onPageChange = (newPage, newPageSize) => {
         setPage(newPage);
@@ -46,15 +51,7 @@ const Blog = () => {
                 <SkeletonCard count={3} className="col-lg-4 col-md-6 mb-4" />
             </div>
         );
-    } else if (isError) {
-        content = <div className="text-center text-danger w-100 mt-5">Error loading data.</div>;
-    } else if (blogData.length === 0) {
-        content = (
-            <div className="w-100 mt-5">
-                <EmptyState type="generic" title="No data available" />
-            </div>
-        );
-    } else {
+    } else if (blogData && blogData.length > 0) {
         content = blogData.map((item) => (
             <div className="col-lg-4 col-md-6 mb-4" key={item.id}>
                 <div className="blog-card-modern">
@@ -81,6 +78,12 @@ const Blog = () => {
                 </div>
             </div>
         ));
+    } else {
+        content = (
+            <div className="w-100">
+                <EmptyState type="generic" title="No available data right now" />
+            </div>
+        );
     }
 
     return (
