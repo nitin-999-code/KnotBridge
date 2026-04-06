@@ -15,20 +15,15 @@ const Blog = () => {
 	const apiBlogData = data?.blogs;
     const blogData = safeArray(apiBlogData, mockBlogPosts.slice(0, 3));
 
-	const renderContent = () => {
-		if (isLoading) return (
+	let content = null;
+	if (isLoading) {
+		content = (
 			<div className="row justify-content-center w-100">
 				<SkeletonCard count={3} className="col-md-4 col-sm-12 mb-4" />
 			</div>
 		);
-		if (isError) return <div className="text-center text-danger">Error loading blog posts.</div>;
-		if (!blogData?.length) return (
-			<div className="col-12 py-5">
-				<Empty description="No available data right now" />
-			</div>
-		);
-		
-		return blogData.map((item) => (
+	} else if (blogData?.length > 0) {
+		content = blogData.map((item) => (
 			<div className="col-md-4 col-sm-12 mb-4" key={item?.id}>
 				<article className="blog-card">
 					<Link to={`/blog/${item?.id}`} className="blog-card__img-link">
@@ -56,7 +51,13 @@ const Blog = () => {
 				</article>
 			</div>
 		));
-	};
+	} else {
+		content = (
+			<div className="col-12 py-5">
+				<Empty description="No available data right now" />
+			</div>
+		);
+	}
 
 	return (
 		<section className="blog-section">
@@ -69,7 +70,7 @@ const Blog = () => {
 					</p>
 				</div>
 				<div className="row justify-content-center">
-					{renderContent()}
+					{content}
 				</div>
 				<div className="text-center mt-4 mt-md-5">
 					<Link to="/blog" className="blog-section__cta">View all posts</Link>

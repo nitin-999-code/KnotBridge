@@ -6,8 +6,6 @@ import { getBaseUrl } from '../../helpers/config/envConfig'
 export const baseApi = createApi({
     reducerPath: 'api',
     baseQuery: axiosBaseQuery({ baseUrl: getBaseUrl() }),
-    keepUnusedDataFor: 600,
-    refetchOnMountOrArgChange: 300,
     endpoints: () => ({}),
     tagTypes: tagTypeList
 })
