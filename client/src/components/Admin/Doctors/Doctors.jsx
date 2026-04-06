@@ -5,6 +5,7 @@ import { FaSearch, FaPlus, FaEdit, FaTrash, FaUserMd } from 'react-icons/fa';
 import { useGetDoctorsQuery, useUpdateDoctorMutation } from '../../../redux/api/doctorApi';
 import { doctorSpecialistOptions } from '../../../constant/global';
 import ImageUploadWithCrop from '../../UI/ImageUploadWithCrop';
+import { mockDoctors } from '../../../data/mockDoctors';
 import './Doctors.css';
 
 const Doctors = () => {
@@ -26,10 +27,15 @@ const Doctors = () => {
         ...(specialtyFilter && { specialist: specialtyFilter }),
     }), [page, pageSize, searchTerm, specialtyFilter]);
 
-    const { data, isLoading, refetch } = useGetDoctorsQuery(queryParams);
+    const { data, isLoading, refetch, isError } = useGetDoctorsQuery(queryParams);
     const [updateDoctor, { isLoading: isUpdating }] = useUpdateDoctorMutation();
 
-    const doctors = data?.doctors || [];
+    if (isError) {
+        console.error("API failed, using fallback data");
+    }
+
+    const apiDoctors = data?.doctors;
+    const doctors = Array.isArray(apiDoctors) && apiDoctors.length > 0 ? apiDoctors : mockDoctors;
     const meta = data?.meta || {};
 
     const handleAddDoctor = () => {
