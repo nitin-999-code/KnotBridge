@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.css';
 import { FaUserMd, FaStar } from 'react-icons/fa';
 import { Empty } from 'antd';
@@ -12,9 +12,15 @@ const OurDoctors = () => {
     const { data, isLoading, isError } = useGetDoctorsQuery({ limit: 4 });
     const apiDoctors = data?.doctors;
     const doctors = safeArray(apiDoctors, mockDoctors.slice(0, 4));
+    const [showLoading, setShowLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setShowLoading(false), 1500);
+        return () => clearTimeout(timer);
+    }, []);
 
     let content = null;
-    if (isLoading) {
+    if (isLoading && showLoading) {
         content = (
             <div className="row justify-content-center w-100">
                 <SkeletonCard count={4} className="col-sm-6 col-lg-3 mb-4" />

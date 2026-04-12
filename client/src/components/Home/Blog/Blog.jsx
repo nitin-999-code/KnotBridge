@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { Empty, message } from 'antd';
 import { useGetAllBlogsQuery } from '../../../redux/api/blogApi';
@@ -14,9 +14,15 @@ const Blog = () => {
 	const { data, isError, isLoading } = useGetAllBlogsQuery({ limit: 3 });
 	const apiBlogData = data?.blogs;
     const blogData = safeArray(apiBlogData, mockBlogPosts.slice(0, 3));
+    const [showLoading, setShowLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setShowLoading(false), 1500);
+        return () => clearTimeout(timer);
+    }, []);
 
 	let content = null;
-	if (isLoading) {
+	if (isLoading && showLoading) {
 		content = (
 			<div className="row justify-content-center w-100">
 				<SkeletonCard count={3} className="col-md-4 col-sm-12 mb-4" />

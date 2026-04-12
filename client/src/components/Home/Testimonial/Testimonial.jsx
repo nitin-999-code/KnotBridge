@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './index.css';
 import { useGetAllReviewsQuery } from '../../../redux/api/reviewsApi';
@@ -12,12 +12,23 @@ import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
+import { mockReviews } from '../../../config/demoMode';
+import { safeArray } from '../../../utils/safeData';
 
 const Testimonial = () => {
-	const { data, isLoading, isError } = useGetAllReviewsQuery({});
-	let content = null;
+    const { data, isLoading, isError } = useGetAllReviewsQuery({});
+    const [showLoading, setShowLoading] = useState(true);
 
-	if (isLoading) {
+    useEffect(() => {
+        const timer = setTimeout(() => setShowLoading(false), 1500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const reviewsData = safeArray(data, mockReviews);
+    
+    let content = null;
+
+	if (isLoading && showLoading) {
 		content = (
 			<>
 				{[1, 2].map((i) => (
@@ -33,13 +44,13 @@ const Testimonial = () => {
 				))}
 			</>
 		);
-	} else if (!isLoading && isError) {
+	} else if (!isLoading && isError && reviewsData.length === 0) {
 		content = (
 			<div className="col-12 text-center py-5">
 				<p className="testimonial-error">Unable to load reviews.</p>
 			</div>
 		);
-	} else if (!isLoading && (!data || data.length === 0)) {
+	} else if (reviewsData?.length === 0) {
 		content = (
 			<div className="col-12 py-5 d-flex justify-content-center">
 				<Empty
@@ -53,8 +64,8 @@ const Testimonial = () => {
 				</Empty>
 			</div>
 		);
-	} else if (data?.length > 0) {
-		content = data.slice(0, 10).map((item) => (
+	} else if (reviewsData?.length > 0) {
+		content = reviewsData.slice(0, 10).map((item) => (
 			<SwiperSlide key={item.id}>
 				<div className="testimonial-card">
 					<div className="testimonial-card__header">
@@ -88,8 +99,8 @@ const Testimonial = () => {
 		));
 	}
 
-	const isEmpty = !isLoading && !isError && (!data || data.length === 0);
-	const hasData = !isLoading && !isError && data?.length > 0;
+	const isEmpty = reviewsData?.length === 0;
+	const hasData = reviewsData?.length > 0;
 
 	return (
 		<section className="testimonial-section">
@@ -100,7 +111,7 @@ const Testimonial = () => {
 					<p className="testimonial-section__lead">What our patients say about us</p>
 				</div>
 
-				{isLoading && (
+				{isLoading && showLoading && (
 					<div className="testimonial-swiper-wrap">
 						<div className="d-flex gap-4 justify-content-center">
 							{[1, 2].map((i) => (
@@ -116,7 +127,7 @@ const Testimonial = () => {
 					</div>
 				)}
 
-				{!isLoading && isError && (
+				{!showLoading && isError && reviewsData?.length === 0 && (
 					<div className="text-center py-5">
 						<Empty
 							image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -170,7 +181,7 @@ const Testimonial = () => {
 							}}
 							className="testimonial-swiper"
 						>
-							{data.slice(0, 10).map((item) => (
+							{reviewsData.slice(0, 10).map((item) => (
 								<SwiperSlide key={item.id}>
 									<div className="testimonial-card">
 										<div className="testimonial-card__header">

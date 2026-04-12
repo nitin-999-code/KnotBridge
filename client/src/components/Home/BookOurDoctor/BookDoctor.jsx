@@ -19,6 +19,12 @@ const BookDoctor = () => {
 	const doctors = Array.isArray(apiDoctors) && apiDoctors.length > 0 ? apiDoctors : mockDoctors;
 	const [addFavourite, { isSuccess, isError: fIsError, error }] = useAddFavouriteMutation();
 	const [selectedId, setSelectedId] = useState(null);
+	const [showLoading, setShowLoading] = useState(true);
+
+	useEffect(() => {
+		const timer = setTimeout(() => setShowLoading(false), 1500);
+		return () => clearTimeout(timer);
+	}, []);
 
 	const handleAddFavourite = (e, id) => {
 		e.preventDefault();
@@ -36,7 +42,7 @@ const BookDoctor = () => {
 	}, [isSuccess, fIsError, error?.data?.message]);
 
 	let content = null;
-	if (isLoading) {
+	if (isLoading && showLoading) {
 		content = (
 			<>
 				{[1, 2, 3].map((i) => (
