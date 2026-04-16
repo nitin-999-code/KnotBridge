@@ -81,11 +81,11 @@ const SignIn = () => {
                 </form>
             ) : (
                 <form className="auth-form" onSubmit={handleSubmit(onSubmit)}>
-                    <Toast show={show} onClose={() => setShow(!show)} className="auth-toast position-absolute top-0 end-0 m-3" style={{ zIndex: 1050 }}>
+                    <Toast show={show} onClose={() => setShow(!show)} className="auth-toast position-fixed bottom-0 end-0 m-4" style={{ zIndex: 1050 }}>
                         <Toast.Header>
                             <strong className="me-auto">Fair use & demo access</strong>
                         </Toast.Header>
-                        <Toast.Body className="small">
+                        <Toast.Body className="small shadow-sm bg-white rounded">
                             <p className="mb-2"><strong>Patient:</strong> testuser@gmail.com / 123456</p>
                             <p className="mb-0"><strong>Doctor:</strong> doctor@gmail.com / 123456</p>
                         </Toast.Body>
