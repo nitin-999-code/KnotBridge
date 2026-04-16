@@ -41,16 +41,12 @@
     </script>
     <!--End of Tawk.to Script-->
     <style>
-      /* Force Tawk.to chat widget green theme */
-      .tawk-min-container .tawk-button-circle,
-      .tawk-min-container .tawk-button-circle.tawk-button-large,
-      [class*="tawk-agent-chat-bubble"],
-      .tawk-custom-color {
-        background: #166534 !important;
-      }
-      iframe[title="chat widget"] + div,
+      /* Force Tawk.to chat widget green theme via CSS filter */
+      iframe[src*="tawk.to"],
+      iframe[title="chat widget"],
+      div[id^="tawk"] iframe,
       .tawk-min-container iframe {
-        --tawk-header-color: #166534 !important;
+        filter: hue-rotate(-75deg) saturate(1.1) !important;
       }
     </style>
 </body>
